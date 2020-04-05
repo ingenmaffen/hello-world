@@ -1,0 +1,27 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "A simple game made with Electron and Babylon.js",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "watch": "nodemon --exec npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ingenmaffen/hello-world.git"
+  },
+  "author": "Rabi Róbert <ingenmaffen@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ingenmaffen/hello-world/issues"
+  },
+  "homepage": "https://github.com/ingenmaffen/hello-world#readme",
+  "dependencies": {
+    "babylonjs": "4.1.0"
+  },
+  "devDependencies": {
+    "electron": "8.2.0",
+    "nodemon": "2.0.2"
+  }
+}
