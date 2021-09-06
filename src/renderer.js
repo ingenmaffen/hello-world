@@ -1,40 +1,51 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
+import * as THREE from "../node_modules/three/build/three.module.js";
+import { handleCamereMovement } from "./game/player-controls.js";
 
-var camera, scene, renderer;
+let camera;
+let scene; 
+let renderer;
 var geometry, texture, bgTexture, mesh;
-var isDirectionDown = false;
+const cameraPosition = { x: 3 * Math.PI / 4, y: 0 };
 
 function init() {
 
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10 );
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 3;
 
     scene = new THREE.Scene();
-    bgTexture = new THREE.TextureLoader().load( "src/assets/2k_stars_milky_way.jpg" );
-    scene.background = bgTexture;
+    const bgGeometry = new THREE.SphereGeometry(90, 32, 16);
+    bgTexture = new THREE.TextureLoader().load("src/assets/2k_stars_milky_way.jpg");
+    const bgMesh = new THREE.Mesh(bgGeometry, new THREE.MeshBasicMaterial({map: bgTexture, side: THREE.DoubleSide}));
+    scene.add(bgMesh);
 
-    geometry = new THREE.SphereGeometry( 1, 32, 16 );
-    texture = new THREE.TextureLoader().load( "src/assets/2k_earth_daymap.jpg" );
+    geometry = new THREE.SphereGeometry(1, 32, 16);
+    texture = new THREE.TextureLoader().load("src/assets/2k_earth_daymap.jpg");
     mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
-    scene.add( mesh );
+    scene.add(mesh);
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    const moon = new THREE.SphereGeometry(0.25, 32, 16);
+    const moonTexture = new THREE.TextureLoader().load("src/assets/2k_moon.jpg");
+    const moonMesh = new THREE.Mesh(moon, new THREE.MeshBasicMaterial({map: moonTexture}));
+    moonMesh.position.x = 1;
+    moonMesh.position.y = 1;
+    scene.add(moonMesh);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
     
     // event listener on resize
 	window.addEventListener('resize', handleWindowResize);  
 
     // camera movement
     addEventListener("mousemove", (event) => {
-        // event.movementX
-        // event.movementY
-      });
+        handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, mesh);
+    });
 }
 
 function handleWindowResize() {
-	HEIGHT = window.innerHeight;
-	WIDTH = window.innerWidth;
+	const HEIGHT = window.innerHeight;
+	const WIDTH = window.innerWidth;
 	renderer.setSize(WIDTH, HEIGHT);
 	aspectRatio = WIDTH / HEIGHT;
 
@@ -42,20 +53,15 @@ function handleWindowResize() {
 	camera.updateProjectionMatrix();
 }
 
-function animate( time ) {
-    if(isDirectionDown ) {
-        mesh.position.y -= 0.01;
-        isDirectionDown = mesh.position.y > -0.5
-    } else {
-        mesh.position.y += 0.01;
-        isDirectionDown = mesh.position.y > 0.5
-    }
+function animate(time) {
+    // const spin = time * 0.0005;
+    // mesh.rotation.z = Math.PI / 8;
+    // mesh.rotation.y = spin;
+    // mesh.rotation.z = spin * Math.cos(mesh.rotation.y);
 
-    mesh.rotation.y = time * 0.0005;
-
-    renderer.render( scene, camera );
-    requestAnimationFrame( animate );
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
 }
 
 init();
-requestAnimationFrame( animate );
+requestAnimationFrame(animate);
