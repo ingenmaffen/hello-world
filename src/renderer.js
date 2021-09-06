@@ -1,7 +1,7 @@
-import * as THREE from './node_modules/three/build/three.module.js';
+import * as THREE from '../node_modules/three/build/three.module.js';
 
 var camera, scene, renderer;
-var geometry, material, mesh;
+var geometry, texture, bgTexture, mesh;
 var isDirectionDown = false;
 
 function init() {
@@ -10,20 +10,26 @@ function init() {
     camera.position.z = 3;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x000000 );
+    bgTexture = new THREE.TextureLoader().load( "src/assets/2k_stars_milky_way.jpg" );
+    scene.background = bgTexture;
 
-    geometry = new THREE.BoxGeometry( 1 );
-    material = new THREE.MeshNormalMaterial( { wireframe: false } );
-
-    mesh = new THREE.Mesh( geometry, material );
+    geometry = new THREE.SphereGeometry( 1, 32, 16 );
+    texture = new THREE.TextureLoader().load( "src/assets/2k_earth_daymap.jpg" );
+    mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
     scene.add( mesh );
 
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
     
-    /* event listener on resize */
+    // event listener on resize
 	window.addEventListener('resize', handleWindowResize);  
+
+    // camera movement
+    addEventListener("mousemove", (event) => {
+        // event.movementX
+        // event.movementY
+      });
 }
 
 function handleWindowResize() {
@@ -45,7 +51,7 @@ function animate( time ) {
         isDirectionDown = mesh.position.y > 0.5
     }
 
-    mesh.rotation.y = time * 0.001;
+    mesh.rotation.y = time * 0.0005;
 
     renderer.render( scene, camera );
     requestAnimationFrame( animate );
