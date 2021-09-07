@@ -5,7 +5,7 @@ let camera;
 let scene; 
 let renderer;
 var geometry, texture, bgTexture, mesh;
-const cameraPosition = { x: 3 * Math.PI / 4, y: 0 };
+const cameraPosition = { x: Math.PI / 4, y: 0 };
 
 function init() {
 
@@ -21,19 +21,26 @@ function init() {
     geometry = new THREE.SphereGeometry(1, 32, 16);
     texture = new THREE.TextureLoader().load("src/assets/2k_earth_daymap.jpg");
     mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
+    mesh.position.x = 5;
+    mesh.position.y = 5;
+    mesh.position.z = 5;
     scene.add(mesh);
 
     const moon = new THREE.SphereGeometry(0.25, 32, 16);
     const moonTexture = new THREE.TextureLoader().load("src/assets/2k_moon.jpg");
     const moonMesh = new THREE.Mesh(moon, new THREE.MeshBasicMaterial({map: moonTexture}));
-    moonMesh.position.x = 1;
-    moonMesh.position.y = 1;
+    moonMesh.position.x = mesh.position.x + 1;
+    moonMesh.position.y = mesh.position.y + 1;
+    moonMesh.position.z = mesh.position.z;
     scene.add(moonMesh);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     
+    handleCamereMovement(0, 0, cameraPosition, camera, mesh);
+    addHelperSpheres();
+
     // event listener on resize
 	window.addEventListener('resize', handleWindowResize);  
 
@@ -47,7 +54,7 @@ function handleWindowResize() {
 	const HEIGHT = window.innerHeight;
 	const WIDTH = window.innerWidth;
 	renderer.setSize(WIDTH, HEIGHT);
-	aspectRatio = WIDTH / HEIGHT;
+	const aspectRatio = WIDTH / HEIGHT;
 
 	camera.aspect = aspectRatio;
 	camera.updateProjectionMatrix();
@@ -61,6 +68,14 @@ function animate(time) {
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+}
+
+function addHelperSpheres() {
+    for (let i = 1; i <= 3; i++) {
+        const sphere = new THREE.SphereGeometry(i, 32, 16);
+        const sphereMesh = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({wireframe: true}));
+        scene.add(sphereMesh);
+    }
 }
 
 init();
