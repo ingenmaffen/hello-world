@@ -1,29 +1,31 @@
 import * as THREE from "../node_modules/three/build/three.module.js";
-import { handleCamereMovement, initiatePlayer } from "./game/player-controls.js";
+import { initiatePlayer, handleCamereMovement, handlePlayerMovement } from "./game/player-controls.js";
+import { solarSystem } from "./game/maps.js";
+import { initiateScene } from "./game/scene-loader.js";
 
 let camera;
 let scene; 
 let renderer;
 let player;
-let background;
+let clock;
+const pressedKeys = {};
 const cameraPosition = { x: Math.PI / 4, y: 0 };
 
 function init() {
+    clock = new THREE.Clock();
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 3;
 
     scene = new THREE.Scene();
-
-    const bgGeometry = new THREE.SphereGeometry(90, 32, 16);
-    const bgTexture = new THREE.TextureLoader().load("src/assets/2k_stars_milky_way.jpg");
-    background = new THREE.Mesh(bgGeometry, new THREE.MeshBasicMaterial({map: bgTexture, side: THREE.DoubleSide}));
-    scene.add(background);
+    initiateScene(THREE, scene, solarSystem);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    player = initiatePlayer(scene, THREE);
+    player = initiatePlayer(THREE);
+    scene.add(player);
+
     handleCamereMovement(0, 0, cameraPosition, camera, player);
 
     // event listener on resize
@@ -32,6 +34,15 @@ function init() {
     // camera movement
     addEventListener("mousemove", (event) => {
         handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
+    });
+
+    // player movement
+    addEventListener("keydown", (event) => {
+        pressedKeys[event.key.toLowerCase()] = true;
+    });
+  
+    addEventListener("keyup", (event) => {
+        delete pressedKeys[event.key.toLowerCase()];
     });
 }
 
@@ -48,6 +59,7 @@ function handleWindowResize() {
 function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+    handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE);
 }
 
 init();

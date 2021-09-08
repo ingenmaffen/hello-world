@@ -1,18 +1,7 @@
-export function initiatePlayer(scene, THREE) {
+export function initiatePlayer(THREE) {
     const geometry = new THREE.SphereGeometry(1, 32, 16);
     const texture = new THREE.TextureLoader().load("src/assets/2k_earth_daymap.jpg");
     const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
-    scene.add(player);
-
-    // TODO: optional or cheat
-    const moon = new THREE.SphereGeometry(0.25, 32, 16);
-    const moonTexture = new THREE.TextureLoader().load("src/assets/2k_moon.jpg");
-    const moonMesh = new THREE.Mesh(moon, new THREE.MeshBasicMaterial({map: moonTexture}));
-    moonMesh.position.x = player.position.x + 1;
-    moonMesh.position.y = player.position.y + 1;
-    moonMesh.position.z = player.position.z;
-    scene.add(moonMesh);
-
     return player;
 }
 
@@ -35,4 +24,47 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
     camera.position.z = 
         playerObject.position.z + (Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * distance);
     camera.lookAt(playerObject.position);
+}
+
+export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE) {
+    // TODO: move background with player
+    const movementSpeed = 3; // TODO: movement speeding up to a limit
+    const moveDistance = movementSpeed * clock.getDelta();
+    const vector = getMovementVector(camera, player, THREE);
+    for (let [key, value] of Object.entries(pressedKeys)) {
+        switch (key) {
+            case "w":
+                player.translateX(moveDistance * vector.x);
+                player.translateY(moveDistance * vector.y);
+                player.translateZ(moveDistance * vector.z);
+            break;
+            case "s":
+                player.translateX(-moveDistance * vector.x);
+                player.translateY(-moveDistance * vector.y);
+                player.translateZ(-moveDistance * vector.z);
+            break;
+            case "a":
+                player.translateX(moveDistance * vector.z);
+                player.translateZ(-moveDistance * vector.x);
+            break;
+            case "d":
+                player.translateX(-moveDistance * vector.z);
+                player.translateZ(moveDistance * vector.x);
+            break;
+        }
+    }
+    handleCamereMovement(0, 0, cameraPosition, camera, player);
+}
+
+function getMovementVector(camera, player, THREE) {
+    return new THREE.Vector3(
+        player.position.x - camera.position.x,
+        player.position.y - camera.position.y,
+        player.position.z - camera.position.z);
+}
+
+function getDistance(camera, player, THREE) {
+    const vCamera = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+    const vPlayer = new THREE.Vector3(player.position.x, player.position.y, player.position.z);
+    return vCamera.distanceTo(vPlayer);
 }
