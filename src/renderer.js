@@ -2,12 +2,14 @@ import * as THREE from "../node_modules/three/build/three.module.js";
 import { initiatePlayer, handleCamereMovement, handlePlayerMovement } from "./game/player-controls.js";
 import { solarSystem } from "./game/maps.js";
 import { initiateScene } from "./game/scene-loader.js";
+import { handleInGameMenu } from "./game/in-game-menu.js";
 
 let camera;
 let scene; 
 let renderer;
 let player;
 let clock;
+let isGamePaused = false;
 const pressedKeys = {};
 const cameraPosition = { x: Math.PI / 4, y: 0 };
 
@@ -22,6 +24,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+    renderer.domElement.requestPointerLock();
 
     player = initiatePlayer(THREE);
     scene.add(player);
@@ -33,17 +36,41 @@ function init() {
 
     // camera movement
     addEventListener("mousemove", (event) => {
-        handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
+		if (!isGamePaused) {
+			handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
+		}
     });
 
     // player movement
     addEventListener("keydown", (event) => {
-        pressedKeys[event.key.toLowerCase()] = true;
+        if (event.key === "Escape") {
+          document.exitPointerLock();
+
+		  isGamePaused = handleInGameMenu(isGamePaused, unPauseGame);
+
+		  if (!isGamePaused) {
+    		renderer.domElement.requestPointerLock();
+		  }
+        }
+
+		if (!isGamePaused) {
+			pressedKeys[event.key.toLowerCase()] = true;
+		}
     });
   
     addEventListener("keyup", (event) => {
         delete pressedKeys[event.key.toLowerCase()];
     });
+}
+
+function unPauseGame() {
+	isGamePaused = false;
+	renderer.domElement.requestPointerLock();
+
+	const overlay = document.getElementById("overlay");
+	if (overlay) {
+		overlay.remove();
+	}
 }
 
 function handleWindowResize() {

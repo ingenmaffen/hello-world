@@ -1,6 +1,7 @@
 export function initiatePlayer(THREE) {
+    const texturePathBase = "src/assets/textures"
     const geometry = new THREE.SphereGeometry(1, 32, 16);
-    const texture = new THREE.TextureLoader().load("src/assets/2k_earth_daymap.jpg");
+    const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
     const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
     return player;
 }
