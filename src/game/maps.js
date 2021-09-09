@@ -1,4 +1,4 @@
-/* 
+/*
  * Mandatory attributes for objects: geometry, constructorParams and material
  */
 
@@ -17,7 +17,7 @@ export const solarSystem = {
             position: {
                 x: 1,
                 y: 1,
-                z: 0
+                z: 0,
             },
             constructorParams: "0.25, 32, 16",
             geometry: "SphereGeometry",
@@ -32,9 +32,9 @@ export const solarSystem = {
             position: {
                 x: -3,
                 y: -3,
-                z: 2
+                z: 2,
             },
             materialOptions: null,
-        }
-    ]
+        },
+    ],
 };

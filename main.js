@@ -1,21 +1,21 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 768,
         webPreferences: {
-            nodeIntegration: true
-        }
+            nodeIntegration: true,
+        },
     });
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile("index.html");
 
     mainWindow.webContents.openDevTools();
 
-    mainWindow.on('cloes', () => {
+    mainWindow.on("close", () => {
         mainWindow = null;
     });
 }
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);

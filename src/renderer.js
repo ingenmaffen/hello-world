@@ -1,11 +1,15 @@
 import * as THREE from "../node_modules/three/build/three.module.js";
-import { initiatePlayer, handleCamereMovement, handlePlayerMovement } from "./game/player-controls.js";
+import {
+    initiatePlayer,
+    handleCamereMovement,
+    handlePlayerMovement,
+} from "./game/player-controls.js";
 import { solarSystem } from "./game/maps.js";
 import { initiateScene } from "./game/scene-loader.js";
 import { handleInGameMenu } from "./game/in-game-menu.js";
 
 let camera;
-let scene; 
+let scene;
 let renderer;
 let player;
 let clock;
@@ -15,7 +19,12 @@ const cameraPosition = { x: Math.PI / 4, y: 0 };
 
 function init() {
     clock = new THREE.Clock();
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera = new THREE.PerspectiveCamera(
+        90,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+    );
     camera.position.z = 3;
 
     scene = new THREE.Scene();
@@ -32,61 +41,74 @@ function init() {
     handleCamereMovement(0, 0, cameraPosition, camera, player);
 
     // event listener on resize
-	window.addEventListener('resize', handleWindowResize);  
+    window.addEventListener("resize", handleWindowResize);
 
     // camera movement
     addEventListener("mousemove", (event) => {
-		if (!isGamePaused) {
-			handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
-		}
+        if (!isGamePaused) {
+            handleCamereMovement(
+                event.movementX,
+                event.movementY,
+                cameraPosition,
+                camera,
+                player
+            );
+        }
     });
 
     // player movement
     addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
-          document.exitPointerLock();
+            document.exitPointerLock();
 
-		  isGamePaused = handleInGameMenu(isGamePaused, unPauseGame);
+            isGamePaused = handleInGameMenu(isGamePaused, unPauseGame);
 
-		  if (!isGamePaused) {
-    		renderer.domElement.requestPointerLock();
-		  }
+            if (!isGamePaused) {
+                renderer.domElement.requestPointerLock();
+            }
         }
 
-		if (!isGamePaused) {
-			pressedKeys[event.key.toLowerCase()] = true;
-		}
+        if (!isGamePaused) {
+            pressedKeys[event.key.toLowerCase()] = true;
+        }
     });
-  
+
     addEventListener("keyup", (event) => {
         delete pressedKeys[event.key.toLowerCase()];
     });
 }
 
 function unPauseGame() {
-	isGamePaused = false;
-	renderer.domElement.requestPointerLock();
+    isGamePaused = false;
+    renderer.domElement.requestPointerLock();
 
-	const overlay = document.getElementById("overlay");
-	if (overlay) {
-		overlay.remove();
-	}
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.remove();
+    }
 }
 
 function handleWindowResize() {
-	const HEIGHT = window.innerHeight;
-	const WIDTH = window.innerWidth;
-	const aspectRatio = WIDTH / HEIGHT;
+    const HEIGHT = window.innerHeight;
+    const WIDTH = window.innerWidth;
+    const aspectRatio = WIDTH / HEIGHT;
 
-	renderer.setSize(WIDTH, HEIGHT);
-	camera.aspect = aspectRatio;
-	camera.updateProjectionMatrix();
+    renderer.setSize(WIDTH, HEIGHT);
+    camera.aspect = aspectRatio;
+    camera.updateProjectionMatrix();
 }
 
 function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-    handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE);
+    handlePlayerMovement(
+        pressedKeys,
+        clock,
+        player,
+        cameraPosition,
+        camera,
+        THREE
+    );
 }
 
 init();

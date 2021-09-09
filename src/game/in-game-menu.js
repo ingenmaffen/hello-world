@@ -1,9 +1,8 @@
 export function handleInGameMenu(menuOpen, unPauseGame) {
-    if(!menuOpen) {
+    if (!menuOpen) {
         appendOverlay();
         appendButton("Continue", unPauseGame);
-    }
-    else {
+    } else {
         unPauseGame();
     }
 
