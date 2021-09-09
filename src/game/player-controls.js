@@ -1,3 +1,10 @@
+import {
+    Tween,
+    Easing,
+} from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+
+const colliders = [];
+
 export function initiatePlayer(THREE) {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(1, 32, 16);
@@ -77,6 +84,34 @@ export function handlePlayerMovement(
         }
     }
     handleCamereMovement(0, 0, cameraPosition, camera, player);
+    handleCollision(player, THREE);
+}
+
+export function initiateColliders(objects) {
+    objects.forEach((mesh) => {
+        mesh.geometry.computeBoundingSphere();
+        mesh.updateMatrixWorld();
+        const collider = mesh.geometry.boundingSphere.clone();
+        collider.applyMatrix4(mesh.matrixWorld);
+        colliders.push({
+            mesh,
+            collider,
+        });
+    });
+}
+
+function handleCollision(player, THREE) {
+    player.geometry.computeBoundingSphere();
+    player.updateMatrixWorld();
+    const playerCollider = player.geometry.boundingSphere.clone();
+    playerCollider.applyMatrix4(player.matrixWorld);
+    colliders.forEach((object) => {
+        if (playerCollider.intersectsSphere(object.collider)) {
+            const vector = getCollisionVector(player, object.mesh, THREE);
+            animateMovement(object.mesh, vector, object.collider);
+            updateCollider(object.mesh, object.collider);
+        }
+    });
 }
 
 function getMovementVector(camera, player, THREE) {
@@ -87,16 +122,33 @@ function getMovementVector(camera, player, THREE) {
     );
 }
 
-function getDistance(camera, player, THREE) {
-    const vCamera = new THREE.Vector3(
-        camera.position.x,
-        camera.position.y,
-        camera.position.z
+function getCollisionVector(player, object, THREE) {
+    return new THREE.Vector3(
+        object.position.x - player.position.x,
+        object.position.y - player.position.y,
+        object.position.z - player.position.z
     );
-    const vPlayer = new THREE.Vector3(
-        player.position.x,
-        player.position.y,
-        player.position.z
-    );
-    return vCamera.distanceTo(vPlayer);
+}
+
+function animateMovement(object, vector, collider) {
+    const force = 0.1;
+    const coords = { ...object.position };
+    new Tween(coords)
+        .to({ ...vector }, 1)
+        .easing(Easing.Quadratic.InOut)
+        .onUpdate((coords) => {
+            if (coords) {
+                object.position.x += coords.x * force;
+                object.position.y += coords.y * force;
+                object.position.z += coords.z * force;
+            }
+            updateCollider(object, collider);
+        })
+        .start();
+}
+
+function updateCollider(mesh, collider) {
+    collider.center.x = mesh.position.x;
+    collider.center.y = mesh.position.y;
+    collider.center.z = mesh.position.z;
 }

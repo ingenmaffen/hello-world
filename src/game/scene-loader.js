@@ -1,4 +1,6 @@
 export function initiateScene(THREE, scene, map) {
+    const sceneObjects = [];
+
     const bgGeometry = new THREE.SphereGeometry(90, 32, 16);
     const bgTexture = map.backgroundTexture
         ? new THREE.TextureLoader().load(map.backgroundTexture)
@@ -27,5 +29,11 @@ export function initiateScene(THREE, scene, map) {
         mesh.position.y = object.position.y;
         mesh.position.z = object.position.z;
         scene.add(mesh);
+        sceneObjects.push(mesh);
     });
+
+    return {
+        background,
+        sceneObjects,
+    };
 }

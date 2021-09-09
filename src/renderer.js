@@ -1,8 +1,10 @@
 import * as THREE from "../node_modules/three/build/three.module.js";
+import { update } from "../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 import {
     initiatePlayer,
     handleCamereMovement,
     handlePlayerMovement,
+	initiateColliders,
 } from "./game/player-controls.js";
 import { solarSystem } from "./game/maps.js";
 import { initiateScene } from "./game/scene-loader.js";
@@ -23,12 +25,13 @@ function init() {
         90,
         window.innerWidth / window.innerHeight,
         0.1,
-        100
+        100 * 2
     );
     camera.position.z = 3;
 
     scene = new THREE.Scene();
-    initiateScene(THREE, scene, solarSystem);
+    const loadedScene = initiateScene(THREE, scene, solarSystem);
+	initiateColliders(loadedScene.sceneObjects);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -55,6 +58,12 @@ function init() {
             );
         }
     });
+
+	addEventListener("click", () => {
+        if (!isGamePaused) {
+			renderer.domElement.requestPointerLock();
+		}
+	});
 
     // player movement
     addEventListener("keydown", (event) => {
@@ -98,9 +107,10 @@ function handleWindowResize() {
     camera.updateProjectionMatrix();
 }
 
-function animate() {
+function animate(time) {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+	update(time);
     handlePlayerMovement(
         pressedKeys,
         clock,
