@@ -131,16 +131,19 @@ function getCollisionVector(player, object, THREE) {
 }
 
 function animateMovement(object, vector, collider) {
-    const force = 0.1;
-    const coords = { ...object.position };
+    const force = 0.05;
+    const coords = { x: 0, y: 0, z: 0 };
     new Tween(coords)
-        .to({ ...vector }, 1)
+        .to({ ...vector }, 300)
         .easing(Easing.Quadratic.InOut)
         .onUpdate((coords) => {
             if (coords) {
-                object.position.x += coords.x * force;
-                object.position.y += coords.y * force;
-                object.position.z += coords.z * force;
+                object.translateX(force * coords.x);
+                object.translateY(force * coords.y);
+                object.translateZ(force * coords.z);
+                // object.rotation.x += coords.x * force;
+                // object.rotation.y += coords.y * force;
+                // object.rotation.z += coords.z * force;
             }
             updateCollider(object, collider);
         })
