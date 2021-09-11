@@ -67,3 +67,14 @@ export function initiateScene(THREE, scene, map) {
         sceneObjects,
     };
 }
+
+export function initiateSound(THREE, camera) {
+    const listener = new THREE.AudioListener();
+    camera.add( listener );
+    const sound = new THREE.Audio( listener );
+    const audioLoader = new THREE.AudioLoader();
+    return {
+        sound,
+        audioLoader
+    }
+}

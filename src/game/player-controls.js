@@ -23,7 +23,8 @@ export function handleCamereMovement(
     y,
     cameraPosition,
     camera,
-    playerObject
+    playerObject,
+    audio
 ) {
     const distance = 3;
     const cameraSpeed = 0.5;
@@ -55,7 +56,8 @@ export function handlePlayerMovement(
     player,
     cameraPosition,
     camera,
-    THREE
+    THREE,
+    audio
 ) {
     // TODO: move background with player
     const movementSpeed = pressedKeys["shift"] ? 100 : 30; // TODO: movement speeding up to a limit
@@ -84,7 +86,7 @@ export function handlePlayerMovement(
         }
     }
     handleCamereMovement(0, 0, cameraPosition, camera, player);
-    handleCollision(player, THREE);
+    handleCollision(player, THREE, audio);
 }
 
 export function initiateColliders(objects) {
@@ -100,7 +102,7 @@ export function initiateColliders(objects) {
     });
 }
 
-function handleCollision(player, THREE) {
+function handleCollision(player, THREE, audio) {
     player.geometry.computeBoundingSphere();
     player.updateMatrixWorld();
     const playerCollider = player.geometry.boundingSphere.clone();
@@ -108,6 +110,7 @@ function handleCollision(player, THREE) {
     colliders.forEach((object) => {
         if (playerCollider.intersectsSphere(object.collider)) {
             const vector = getCollisionVector(player, object.mesh, THREE);
+            playCollisionSound(audio);
             animateMovement(object.mesh, vector, object.collider);
             updateCollider(object.mesh, object.collider);
         }
@@ -154,4 +157,13 @@ function updateCollider(mesh, collider) {
     collider.center.x = mesh.position.x;
     collider.center.y = mesh.position.y;
     collider.center.z = mesh.position.z;
+}
+
+function playCollisionSound(audio) {
+    audio.audioLoader.load("src/assets/sounds/clack.wav", function (buffer) {
+        audio.sound.setBuffer(buffer);
+        audio.sound.setLoop(false);
+        audio.sound.setVolume(1);
+        audio.sound.play();
+    });
 }

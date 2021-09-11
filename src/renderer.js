@@ -7,7 +7,7 @@ import {
 	initiateColliders,
 } from "./game/player-controls.js";
 import { solarSystem } from "./game/maps.js";
-import { initiateScene } from "./game/scene-loader.js";
+import { initiateScene, initiateSound } from "./game/scene-loader.js";
 import { handleInGameMenu } from "./game/in-game-menu.js";
 
 let camera;
@@ -15,6 +15,7 @@ let scene;
 let renderer;
 let player;
 let clock;
+let audio;
 let isGamePaused = false;
 const pressedKeys = {};
 const cameraPosition = { x: Math.PI / 4, y: 0 };
@@ -32,6 +33,7 @@ function init() {
     scene = new THREE.Scene();
     const loadedScene = initiateScene(THREE, scene, solarSystem);
 	initiateColliders(loadedScene.sceneObjects);
+    audio = initiateSound(THREE, camera);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -117,7 +119,8 @@ function animate(time) {
         player,
         cameraPosition,
         camera,
-        THREE
+        THREE,
+        audio
     );
 }
 
