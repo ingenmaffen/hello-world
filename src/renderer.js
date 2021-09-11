@@ -25,7 +25,7 @@ function init() {
         90,
         window.innerWidth / window.innerHeight,
         0.1,
-        100 * 2
+        100 * 200
     );
     camera.position.z = 3;
 

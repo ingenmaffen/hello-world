@@ -58,7 +58,7 @@ export function handlePlayerMovement(
     THREE
 ) {
     // TODO: move background with player
-    const movementSpeed = 3; // TODO: movement speeding up to a limit
+    const movementSpeed = pressedKeys["shift"] ? 100 : 30; // TODO: movement speeding up to a limit
     const moveDistance = movementSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
     for (let [key, value] of Object.entries(pressedKeys)) {

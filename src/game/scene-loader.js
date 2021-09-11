@@ -1,7 +1,7 @@
 export function initiateScene(THREE, scene, map) {
     const sceneObjects = [];
 
-    const bgGeometry = new THREE.SphereGeometry(90, 32, 16);
+    const bgGeometry = new THREE.SphereGeometry(90 * 200, 32, 16);
     const bgTexture = map.backgroundTexture
         ? new THREE.TextureLoader().load(map.backgroundTexture)
         : null;
@@ -28,8 +28,38 @@ export function initiateScene(THREE, scene, map) {
         mesh.position.x = object.position.x;
         mesh.position.y = object.position.y;
         mesh.position.z = object.position.z;
-        scene.add(mesh);
-        sceneObjects.push(mesh);
+        if (object.ring) {
+            const ringGeometry = new THREE.TorusGeometry(
+                object.ring.outerRadius,
+                object.ring.innerRadius,
+                16,
+                100
+            );
+            const ringTexture = object.ring.texture
+                ? new THREE.TextureLoader().load(object.ring.texture)
+                : null;
+            const ring = new THREE.Mesh(
+                ringGeometry,
+                new THREE.MeshBasicMaterial({
+                    map: ringTexture,
+                    side: THREE.DoubleSide,
+                })
+            );
+            ring.position.x = object.position.x;
+            ring.position.y = object.position.y;
+            ring.position.z = object.position.z;
+            ring.rotation.x = Math.PI / 2;
+            ring.rotation.y = Math.PI / 4;
+            const planetGroup = new THREE.Group();
+            planetGroup.add(mesh);
+            planetGroup.add(ring);
+            scene.add(planetGroup);
+            sceneObjects.push(mesh);
+            sceneObjects.push(ring);
+        } else {
+            scene.add(mesh);
+            sceneObjects.push(mesh);
+        }
     });
 
     return {
