@@ -138,12 +138,12 @@ function animateMovement(object, vector, collider) {
         .easing(Easing.Quadratic.InOut)
         .onUpdate((coords) => {
             if (coords) {
-                object.translateX(force * coords.x);
-                object.translateY(force * coords.y);
-                object.translateZ(force * coords.z);
-                // object.rotation.x += coords.x * force;
-                // object.rotation.y += coords.y * force;
-                // object.rotation.z += coords.z * force;
+                object.position.x += coords.x * force;
+                object.position.y += coords.y * force;
+                object.position.z += coords.z * force;
+                object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
+                // object.rotation.y += Math.cos(coords.y) * Math.pow(force, 2);
+                object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
             }
             updateCollider(object, collider);
         })
