@@ -9,6 +9,7 @@ import {
 import { solarSystem } from "./game/maps.js";
 import { initiateScene, initiateSound } from "./game/scene-loader.js";
 import { handleInGameMenu } from "./game/in-game-menu.js";
+import { playBackgroundMusic } from "./game/music.js"
 
 let camera;
 let scene;
@@ -44,6 +45,7 @@ function init() {
     scene.add(player);
 
     handleCamereMovement(0, 0, cameraPosition, camera, player);
+    playBackgroundMusic();
 
     // event listener on resize
     window.addEventListener("resize", handleWindowResize);
