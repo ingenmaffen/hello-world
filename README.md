@@ -2,7 +2,11 @@
 
 ## Summary
 
+TODO
+
 ## Download
+
+TODO
 
 ## Acknowledgement
 
@@ -11,3 +15,25 @@
     - Collision sound: ["billiard ball clack" from freesound](https://freesound.org/people/Za-Games/sounds/539854/)
 
 ## Contribution
+
+First, you will need Node.js (at least 12.x). After that, run 
+
+```
+npm install
+```
+
+to install the project's dependencies. 
+
+After that, you can run
+
+```
+npm start
+```
+
+to run the app in development mode or
+
+```
+npm run build
+``` 
+
+to build it.
