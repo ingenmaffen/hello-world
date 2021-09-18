@@ -7,6 +7,22 @@
 
 const distanceDownScale = 1 / 42; 
 const radiusDownScale = 1;
+export const sunPosition = {
+    x: 0,
+    y: 0,
+    z: 209,
+};
+
+export const helperCircles = [
+    151, // mercury
+    191, // venus
+    209, // earth
+    249, // mars
+    349, // jupiter
+    449, // saturn
+    549, // uranus
+    649  // neptune
+];
 
 const texturePathBase = "src/assets/textures";
 
@@ -18,11 +34,9 @@ export const solarSystem = {
             name: "sun",
             texture: `${texturePathBase}/2k_sun.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: 23387 * distanceDownScale,
+                ...sunPosition
             },
-            constructorParams: `${109 * radiusDownScale}, 32, 16`,
+            constructorParams: `${109}, 64, 32`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -31,11 +45,11 @@ export const solarSystem = {
             name: "mercury",
             texture: `${texturePathBase}/2k_mercury.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: 13668 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 151,
             },
-            constructorParams: `${0.38 * radiusDownScale}, 32, 16`,
+            constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -44,11 +58,11 @@ export const solarSystem = {
             name: "venus",
             texture: `${texturePathBase}/2k_venus_atmosphere.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: 6435 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 191,
             },
-            constructorParams: `${0.95 * radiusDownScale}, 32, 16`,
+            constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -57,11 +71,11 @@ export const solarSystem = {
             name: "moon",
             texture: `${texturePathBase}/2k_moon.jpg`,
             position: {
-                x: 42 * distanceDownScale,
-                y: 42 * distanceDownScale,
-                z: 0 * distanceDownScale,
+                x: -2,
+                y: 2,
+                z: -2,
             },
-            constructorParams: `${0.27 * radiusDownScale}, 32, 16`,
+            constructorParams: `${0.25}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -70,11 +84,11 @@ export const solarSystem = {
             name: "mars",
             texture: `${texturePathBase}/2k_mars.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: -11736 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 249,
             },
-            constructorParams: `${0.53 * radiusDownScale}, 32, 16`,
+            constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -83,11 +97,11 @@ export const solarSystem = {
             name: "jupiter",
             texture: `${texturePathBase}/2k_jupiter.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: -93745 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 349,
             },
-            constructorParams: `${11 * radiusDownScale}, 32, 16`,
+            constructorParams: `${22}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -96,29 +110,29 @@ export const solarSystem = {
             name: "saturn",
             texture: `${texturePathBase}/2k_saturn.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: -191353 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 449,
             },
-            constructorParams: `${9.14 * radiusDownScale}, 32, 16`,
+            constructorParams: `${19}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
             ring: {
-                texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
+                // texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
                 innerRadius: 0.94,
-                outerRadius: 15,
+                outerRadius: 30,
             }
         },
         {
             name: "uranus",
             texture: `${texturePathBase}/2k_uranus.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: -404397 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 549,
             },
-            constructorParams: `${4 * radiusDownScale}, 32, 16`,
+            constructorParams: `${8}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
@@ -127,11 +141,11 @@ export const solarSystem = {
             name: "neptune",
             texture: `${texturePathBase}/2k_neptune.jpg`,
             position: {
-                x: 0 * distanceDownScale,
-                y: 0 * distanceDownScale,
-                z: -650869 * distanceDownScale,
+                x: sunPosition.x - 0,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - 649,
             },
-            constructorParams: `${3.86 * radiusDownScale}, 32, 16`,
+            constructorParams: `${7.5}, 32, 16`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,

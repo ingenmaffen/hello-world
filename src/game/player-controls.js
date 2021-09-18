@@ -7,7 +7,7 @@ const colliders = [];
 
 export function initiatePlayer(THREE) {
     const texturePathBase = "src/assets/textures";
-    const geometry = new THREE.SphereGeometry(1, 32, 16);
+    const geometry = new THREE.SphereGeometry(2, 32, 16);
     const texture = new THREE.TextureLoader().load(
         `${texturePathBase}/2k_earth_daymap.jpg`
     );
@@ -23,10 +23,9 @@ export function handleCamereMovement(
     y,
     cameraPosition,
     camera,
-    playerObject,
-    audio
+    playerObject
 ) {
-    const distance = 3;
+    const distance = 5;
     const cameraSpeed = 0.5;
     const yAxisTreshold = Math.PI / 18;
     const yMinAngle = -Math.PI / 2 + yAxisTreshold;
@@ -60,7 +59,7 @@ export function handlePlayerMovement(
     audio
 ) {
     // TODO: move background with player
-    const movementSpeed = pressedKeys["shift"] ? 100 : 30; // TODO: movement speeding up to a limit
+    const movementSpeed = pressedKeys["shift"] ? 30 : 10; // TODO: movement speeding up to a limit
     const moveDistance = movementSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
     for (let [key, value] of Object.entries(pressedKeys)) {
