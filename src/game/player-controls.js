@@ -5,6 +5,13 @@ const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
 let maxSpeed = 30;
 
+const keysEnum = {
+    "FORWARD": "w",
+    "BACKWARD": "s",
+    "LEFT": "a",
+    "RIGHT": "d"
+}
+
 export function initiatePlayer(THREE) {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
@@ -35,35 +42,39 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
     // TODO: move background with player
     // TODO: maybe fix spinning (it's funny enough this way)
-    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 1;
+    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
+    playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
     for (let [key, value] of Object.entries(pressedKeys)) {
         switch (key) {
-            case "w":
+            case keysEnum.FORWARD:
                 player.rotation.x += spinSpeed * DEGREE * vector.z;
                 player.rotation.z += spinSpeed * DEGREE * vector.x;
                 player.position.x += moveDistance * vector.x;
                 player.position.y += moveDistance * vector.y;
                 player.position.z += moveDistance * vector.z;
                 break;
-            case "s":
+            case keysEnum.BACKWARD:
                 player.rotation.x +=  spinSpeed * -DEGREE * vector.z;
                 player.rotation.z +=  spinSpeed * DEGREE * vector.x;
                 player.position.x += -moveDistance * vector.x;
                 player.position.y += -moveDistance * vector.y;
                 player.position.z += -moveDistance * vector.z;
                 break;
-            case "a":
+            case keysEnum.LEFT:
                 player.rotation.y += spinSpeed * -DEGREE;
                 player.position.x += moveDistance * vector.z;
                 player.position.z += -moveDistance * vector.x;
                 break;
-            case "d":
+            case keysEnum.RIGHT:
                 player.rotation.y += spinSpeed * DEGREE;
                 player.position.x += -moveDistance * vector.z;
                 player.position.z += moveDistance * vector.x;
+                break;
+            default:
+                playerSpeed = 0;
                 break;
         }
     }
@@ -91,6 +102,8 @@ function handleCollision(player, THREE, audio) {
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
         if (playerCollider.intersectsSphere(object.collider)) {
+            console.log(player)
+            console.log(object.collider.radius);
             const vector = getCollisionVector(player, object.mesh, THREE);
             playCollisionSound(audio);
             animateMovement(object.mesh, vector, object.collider);
@@ -98,6 +111,10 @@ function handleCollision(player, THREE, audio) {
         }
     });
 }
+
+function isPlayerMoving(pressedKeys) {
+    return pressedKeys[keysEnum.FORWARD] || pressedKeys[keysEnum.BACKWARD] || pressedKeys[keysEnum.LEFT] || pressedKeys[keysEnum.RIGHT];
+} 
 
 function getMovementVector(camera, player, THREE) {
     return new THREE.Vector3(
