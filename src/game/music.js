@@ -5,5 +5,5 @@ export function playBackgroundMusic() {
     const ctx = new AudioContext();
     window["ctx"] = ctx;
     const nsfPlayer = createNsfPlayer(ctx);
-    nsfPlayer.play("src/assets/music/own-2-v2.nsf", 44);
+    nsfPlayer.play("src/assets/music/Hello-World.nsf", 0);
 }

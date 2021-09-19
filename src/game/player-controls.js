@@ -11,7 +11,6 @@ export function initiatePlayer(THREE) {
     const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
     const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture }));
     player.rotation.z = -25 * DEGREE;
-    console.log(player);
     return player;
 }
 
