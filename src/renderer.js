@@ -1,11 +1,6 @@
 import * as THREE from "../node_modules/three/build/three.module.js";
 import { update } from "../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import {
-    initiatePlayer,
-    handleCamereMovement,
-    handlePlayerMovement,
-    initiateColliders,
-} from "./game/player-controls.js";
+import { initiatePlayer, handleCamereMovement, handlePlayerMovement, initiateColliders } from "./game/player-controls.js";
 import { solarSystem, helperCircles, sunPosition } from "./game/maps.js";
 import { initiateScene, initiateSound } from "./game/scene-loader.js";
 import { handleInGameMenu } from "./game/in-game-menu.js";
@@ -23,12 +18,7 @@ const cameraPosition = { x: (-5 * Math.PI) / 8, y: Math.PI / 9 };
 
 function init() {
     clock = new THREE.Clock();
-    camera = new THREE.PerspectiveCamera(
-        90,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        100 * 200
-    );
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100 * 200);
 
     scene = new THREE.Scene();
     const loadedScene = initiateScene(THREE, scene, solarSystem);
@@ -52,13 +42,7 @@ function init() {
     // camera movement
     addEventListener("mousemove", (event) => {
         if (!isGamePaused) {
-            handleCamereMovement(
-                event.movementX,
-                event.movementY,
-                cameraPosition,
-                camera,
-                player
-            );
+            handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
         }
     });
 
@@ -116,15 +100,7 @@ function animate(time) {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
     update(time);
-    handlePlayerMovement(
-        pressedKeys,
-        clock,
-        player,
-        cameraPosition,
-        camera,
-        THREE,
-        audio
-    );
+    handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio);
 }
 
 init();
@@ -134,7 +110,7 @@ function addHelpers() {
     helperCircles.forEach((circle) => {
         const geometry = new THREE.TorusGeometry(circle, 0.1, 32, 64);
         const material = new THREE.MeshBasicMaterial({
-            color: 0xffffff
+            color: 0xffffff,
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.x = sunPosition.x;

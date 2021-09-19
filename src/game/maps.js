@@ -1,12 +1,8 @@
-/*
- * Mandatory attributes for objects: geometry, constructorParams and material
- */
+
 
 // TODO: extend map background (geometry, material, optional params)
 // TODO: add player params (geometry, material, texture, optional params)
 
-const distanceDownScale = 1 / 42; 
-const radiusDownScale = 1;
 export const sunPosition = {
     x: 0,
     y: 0,
@@ -21,11 +17,14 @@ export const helperCircles = [
     349, // jupiter
     449, // saturn
     549, // uranus
-    649  // neptune
+    649, // neptune
 ];
 
 const texturePathBase = "src/assets/textures";
 
+/*
+ * Mandatory attributes for objects: geometry, constructorParams and material
+ */
 export const solarSystem = {
     name: "Solar System",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
@@ -34,7 +33,7 @@ export const solarSystem = {
             name: "sun",
             texture: `${texturePathBase}/2k_sun.jpg`,
             position: {
-                ...sunPosition
+                ...sunPosition,
             },
             constructorParams: `${109}, 64, 32`,
             geometry: "SphereGeometry",
@@ -122,7 +121,7 @@ export const solarSystem = {
                 // texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
                 innerRadius: 0.94,
                 outerRadius: 30,
-            }
+            },
         },
         {
             name: "uranus",

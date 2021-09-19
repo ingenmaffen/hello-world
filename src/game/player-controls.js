@@ -1,30 +1,16 @@
-import {
-    Tween,
-    Easing,
-} from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+import { Tween, Easing } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 
 const colliders = [];
 
 export function initiatePlayer(THREE) {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
-    const texture = new THREE.TextureLoader().load(
-        `${texturePathBase}/2k_earth_daymap.jpg`
-    );
-    const player = new THREE.Mesh(
-        geometry,
-        new THREE.MeshBasicMaterial({ map: texture })
-    );
+    const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
+    const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture }));
     return player;
 }
 
-export function handleCamereMovement(
-    x,
-    y,
-    cameraPosition,
-    camera,
-    playerObject
-) {
+export function handleCamereMovement(x, y, cameraPosition, camera, playerObject) {
     const distance = 5;
     const cameraSpeed = 0.5;
     const yAxisTreshold = Math.PI / 18;
@@ -33,31 +19,16 @@ export function handleCamereMovement(
 
     cameraPosition.x += (((x * Math.PI) / 180) * cameraSpeed) % (Math.PI * 2);
     cameraPosition.y += (((y * Math.PI) / 180) * cameraSpeed) % (Math.PI / 2);
-    cameraPosition.y =
-        cameraPosition.y > yMaxAngle ? yMaxAngle : cameraPosition.y;
-    cameraPosition.y =
-        cameraPosition.y < yMinAngle ? yMinAngle : cameraPosition.y;
+    cameraPosition.y = cameraPosition.y > yMaxAngle ? yMaxAngle : cameraPosition.y;
+    cameraPosition.y = cameraPosition.y < yMinAngle ? yMinAngle : cameraPosition.y;
 
-    camera.position.x =
-        playerObject.position.x +
-        Math.cos(cameraPosition.x) * Math.cos(cameraPosition.y) * distance;
-    camera.position.y =
-        playerObject.position.y + Math.sin(cameraPosition.y) * distance;
-    camera.position.z =
-        playerObject.position.z +
-        Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * distance;
+    camera.position.x = playerObject.position.x + Math.cos(cameraPosition.x) * Math.cos(cameraPosition.y) * distance;
+    camera.position.y = playerObject.position.y + Math.sin(cameraPosition.y) * distance;
+    camera.position.z = playerObject.position.z + Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * distance;
     camera.lookAt(playerObject.position);
 }
 
-export function handlePlayerMovement(
-    pressedKeys,
-    clock,
-    player,
-    cameraPosition,
-    camera,
-    THREE,
-    audio
-) {
+export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
     // TODO: move background with player
     const movementSpeed = pressedKeys["shift"] ? 30 : 10; // TODO: movement speeding up to a limit
     const moveDistance = movementSpeed * clock.getDelta();
