@@ -1,12 +1,17 @@
 import { Tween, Easing } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 
 const colliders = [];
+const DEGREE = Math.PI / 180;
+let playerSpeed = 0;
+let maxSpeed = 30;
 
 export function initiatePlayer(THREE) {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
     const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
     const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture }));
+    player.rotation.z = -25 * DEGREE;
+    console.log(player);
     return player;
 }
 
@@ -30,28 +35,36 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
 
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
     // TODO: move background with player
-    const movementSpeed = pressedKeys["shift"] ? 30 : 10; // TODO: movement speeding up to a limit
-    const moveDistance = movementSpeed * clock.getDelta();
+    // TODO: maybe fix spinning (it's funny enough this way)
+    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 1;
+    const spinSpeed = playerSpeed / 5;
+    const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
     for (let [key, value] of Object.entries(pressedKeys)) {
         switch (key) {
             case "w":
-                player.translateX(moveDistance * vector.x);
-                player.translateY(moveDistance * vector.y);
-                player.translateZ(moveDistance * vector.z);
+                player.rotation.x += spinSpeed * DEGREE * vector.z;
+                player.rotation.z += spinSpeed * DEGREE * vector.x;
+                player.position.x += moveDistance * vector.x;
+                player.position.y += moveDistance * vector.y;
+                player.position.z += moveDistance * vector.z;
                 break;
             case "s":
-                player.translateX(-moveDistance * vector.x);
-                player.translateY(-moveDistance * vector.y);
-                player.translateZ(-moveDistance * vector.z);
+                player.rotation.x +=  spinSpeed * -DEGREE * vector.z;
+                player.rotation.z +=  spinSpeed * DEGREE * vector.x;
+                player.position.x += -moveDistance * vector.x;
+                player.position.y += -moveDistance * vector.y;
+                player.position.z += -moveDistance * vector.z;
                 break;
             case "a":
-                player.translateX(moveDistance * vector.z);
-                player.translateZ(-moveDistance * vector.x);
+                player.rotation.y += spinSpeed * -DEGREE;
+                player.position.x += moveDistance * vector.z;
+                player.position.z += -moveDistance * vector.x;
                 break;
             case "d":
-                player.translateX(-moveDistance * vector.z);
-                player.translateZ(moveDistance * vector.x);
+                player.rotation.y += spinSpeed * DEGREE;
+                player.position.x += -moveDistance * vector.z;
+                player.position.z += moveDistance * vector.x;
                 break;
         }
     }
