@@ -9,7 +9,9 @@ const keysEnum = {
     "FORWARD": "w",
     "BACKWARD": "s",
     "LEFT": "a",
-    "RIGHT": "d"
+    "RIGHT": "d",
+    "UP": " ",
+    "DOWN": "shift"
 }
 
 export function initiatePlayer(THREE) {
@@ -22,7 +24,7 @@ export function initiatePlayer(THREE) {
 }
 
 export function handleCamereMovement(x, y, cameraPosition, camera, playerObject) {
-    const distance = 5;
+    const distance = 5; // TODO: camera distance can be modified with mouse wheel
     const cameraSpeed = 0.5;
     const yAxisTreshold = Math.PI / 18;
     const yMinAngle = -Math.PI / 2 + yAxisTreshold;
@@ -42,12 +44,15 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
     // TODO: move background with player
     // TODO: maybe fix spinning (it's funny enough this way)
+    // TODO: up-down movement (space-shift, like minecraft)
     playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
     playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
+    const upDownSpeed = 3;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
     for (let [key, value] of Object.entries(pressedKeys)) {
+        console.log(key);
         switch (key) {
             case keysEnum.FORWARD:
                 player.rotation.x += spinSpeed * DEGREE * vector.z;
@@ -73,8 +78,11 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
                 player.position.x += -moveDistance * vector.z;
                 player.position.z += moveDistance * vector.x;
                 break;
-            default:
-                playerSpeed = 0;
+            case keysEnum.UP:
+                player.position.y += upDownSpeed;
+                break;
+            case keysEnum.DOWN:
+                player.position.y += -upDownSpeed;
                 break;
         }
     }

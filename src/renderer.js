@@ -73,7 +73,7 @@ function init() {
         delete pressedKeys[event.key.toLowerCase()];
     });
 
-    addHelpers();
+    addHelpers(); // TODO: circles dynamically calculated from sun-planet distance
 }
 
 function unPauseGame() {
