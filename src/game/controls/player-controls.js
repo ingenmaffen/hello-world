@@ -5,6 +5,7 @@ import { playCollisionSound } from "../sounds/sfx.js";
 
 const colliders = [];
 const DEGREE = Math.PI / 180;
+const verticalSpeed = 3;
 let playerSpeed = 0;
 let maxSpeed = 30;
 
@@ -28,18 +29,12 @@ export function initiatePlayer() {
 
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
     // TODO: move background with player
-    // TODO: maybe fix spinning (it's funny enough this way)
     playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
     playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
-    const verticalSpeed = 3;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player);
-    const cDistance = getCameraDistance();
-    vector.x /= cDistance / 5;
-    vector.y /= cDistance / 5;
-    vector.z /= cDistance / 5;
-    for (let [key, value] of Object.entries(pressedKeys)) {
+    for (let [key, _value] of Object.entries(pressedKeys)) {
         switch (key) {
             case keysEnum.FORWARD:
                 player.rotation.x += spinSpeed * DEGREE * vector.z;
@@ -112,19 +107,30 @@ function isPlayerMoving(pressedKeys) {
 } 
 
 function getMovementVector(camera, player) {
-    return new THREE.Vector3(
+    const vector =  new THREE.Vector3(
         player.position.x - camera.position.x,
         player.position.y - camera.position.y,
         player.position.z - camera.position.z
     );
+
+    const cDistance = getCameraDistance();
+    vector.x /= cDistance / 5;
+    vector.y /= cDistance / 5;
+    vector.z /= cDistance / 5;
+
+    return vector;
 }
 
 function getCollisionVector(player, object) {
-    return new THREE.Vector3(
+    const vector = new THREE.Vector3(
         object.position.x - player.position.x,
         object.position.y - player.position.y,
         object.position.z - player.position.z
     );
+
+    vector.x = 1 / vector.x * 5;
+    vector.y = 1 / vector.y * 5;
+    vector.z = 1 / vector.z * 5;
 }
 
 function animateMovement(object, vector, collider) {
@@ -139,7 +145,6 @@ function animateMovement(object, vector, collider) {
                 object.position.y += coords.y * force;
                 object.position.z += coords.z * force;
                 object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
-                // object.rotation.y += Math.cos(coords.y) * Math.pow(force, 2);
                 object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
             }
             updateCollider(object, collider);
