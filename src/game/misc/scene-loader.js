@@ -87,10 +87,7 @@ function addLightToObject(scene, object) {
         const pointLight = new THREE.PointLight(object.otherAttributes.lightColor, 10, 1000, 5);
         pointLight.position.set(object.position.x, object.position.y, object.position.z);
 
-        const hemiLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 1);
-        hemiLight.position.set(object.position.x, object.position.y, object.position.z);
-
         scene.add(pointLight);
-        scene.add(hemiLight);
+        scene.add(new THREE.AmbientLight(0x666666, 2));
     }
 }
