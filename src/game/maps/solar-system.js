@@ -35,6 +35,12 @@ export const solarSystem = {
             position: {
                 ...sunPosition,
             },
+            otherAttributes: {
+                unmovable: true,
+                destroysObjects: true,
+                hasLight: true,
+                lightColor: 0xf55607
+            },
             constructorParams: `${109}, 64, 32`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
@@ -50,7 +56,7 @@ export const solarSystem = {
             },
             constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -63,7 +69,7 @@ export const solarSystem = {
             },
             constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -76,7 +82,7 @@ export const solarSystem = {
             },
             constructorParams: `${0.25}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -89,7 +95,7 @@ export const solarSystem = {
             },
             constructorParams: `${2}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -102,7 +108,7 @@ export const solarSystem = {
             },
             constructorParams: `${22}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -115,7 +121,7 @@ export const solarSystem = {
             },
             constructorParams: `${19}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
             ring: {
                 // texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
@@ -133,7 +139,7 @@ export const solarSystem = {
             },
             constructorParams: `${8}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
         {
@@ -146,7 +152,7 @@ export const solarSystem = {
             },
             constructorParams: `${7.5}, 32, 16`,
             geometry: "SphereGeometry",
-            material: "MeshBasicMaterial",
+            material: "MeshStandardMaterial",
             materialOptions: null,
         },
     ],

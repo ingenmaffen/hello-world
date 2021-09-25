@@ -7,7 +7,7 @@ export function initiateScene(scene, map) {
 
     map.objects.forEach((object) => {
         addObjectToScene(scene, sceneObjects, object);
-        addOrbitalCircles(scene)
+        addOrbitalCircles(scene);
     });
 
     return {
@@ -37,9 +37,13 @@ function addObjectToScene(scene, sceneObjects, object) {
     mesh.position.x = object.position.x;
     mesh.position.y = object.position.y;
     mesh.position.z = object.position.z;
+    mesh.otherAttributes = {
+        ...object.otherAttributes,
+    };
     scene.add(mesh);
     sceneObjects.push(mesh);
-    addRingToPlanet(scene, sceneObjects, object)
+    addRingToPlanet(scene, sceneObjects, object);
+    addLightToObject(scene, object);
 }
 
 function addRingToPlanet(scene, sceneObjects, object) {
@@ -61,7 +65,6 @@ function addRingToPlanet(scene, sceneObjects, object) {
         scene.add(ring);
         sceneObjects.push(ring);
     }
-
 }
 
 function addOrbitalCircles(scene) {
@@ -77,4 +80,17 @@ function addOrbitalCircles(scene) {
         mesh.rotation.x = Math.PI / 2;
         scene.add(mesh);
     });
+}
+
+function addLightToObject(scene, object) {
+    if (object.otherAttributes && object.otherAttributes.hasLight) {
+        const pointLight = new THREE.PointLight(object.otherAttributes.lightColor, 10, 1000, 5);
+        pointLight.position.set(object.position.x, object.position.y, object.position.z);
+
+        const hemiLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 1);
+        hemiLight.position.set(object.position.x, object.position.y, object.position.z);
+
+        scene.add(pointLight);
+        scene.add(hemiLight);
+    }
 }

@@ -2,6 +2,7 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 import { playCollisionSound } from "../sounds/sfx.js";
+import { updatePlayerSpeed, getPlayerSpeed } from "./player-controls.js";
 
 const colliders = [];
 
@@ -25,12 +26,18 @@ export function handleCollision(player, audio) {
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
         if (playerCollider.intersectsSphere(object.collider)) {
-            console.log(player)
-            console.log(object.collider.radius);
-            const vector = getCollisionVector(player, object.mesh);
-            playCollisionSound(audio);
-            animateMovement(object.mesh, vector, object.collider);
-            updateCollider(object.mesh, object.collider);
+            if (object.mesh.otherAttributes.unmovable) {
+                playCollisionSound(audio);
+                updatePlayerSpeed(-1);
+            } else {
+                // console.log(player)
+                // console.log(object.collider.radius);
+                const vector = getCollisionVector(player, object.mesh);
+                playCollisionSound(audio);
+                animateMovement(object.mesh, vector, object.collider);
+                updateCollider(object.mesh, object.collider);
+                updatePlayerSpeed(-1); // TODO: slowing down should relate how big was the object that was hit
+            }
         }
     });
 }
@@ -41,7 +48,7 @@ function getCollisionVector(player, object) {
         object.position.y - player.position.y,
         object.position.z - player.position.z
     );
-
+    // const playerSpeed = getPlayerSpeed();
     // vector.x = 1 / vector.x * playerSpeed;
     // vector.y = 1 / vector.y * playerSpeed;
     // vector.z = 1 / vector.z * playerSpeed;

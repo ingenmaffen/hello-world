@@ -3,7 +3,6 @@ import { handleCamereMovement, getCameraDistance } from "./camera-controls.js";
 import { handleCollision } from "./collision.js";
 
 const DEGREE = Math.PI / 180;
-const verticalSpeed = 3;
 let playerSpeed = 0;
 let maxSpeed = 30;
 
@@ -20,7 +19,7 @@ export function initiatePlayer() {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
     const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
-    const player = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture }));
+    const player = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ map: texture }));
     player.rotation.z = -25 * DEGREE;
     return player;
 }
@@ -29,6 +28,7 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
     // TODO: move background with player
     playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
     playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
+    const verticalSpeed = playerSpeed / 10;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player);
@@ -70,10 +70,22 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
     handleCollision(player, audio);
 }
 
+export function updatePlayerSpeed(value) {
+    playerSpeed = value;
+}
 
+export function getPlayerSpeed() {
+    return playerSpeed;
+}
 
 function isPlayerMoving(pressedKeys) {
-    return pressedKeys[keysEnum.FORWARD] || pressedKeys[keysEnum.BACKWARD] || pressedKeys[keysEnum.LEFT] || pressedKeys[keysEnum.RIGHT];
+    let playerMoving = false;
+    for (let [_key, value] of Object.entries(keysEnum)) {
+        if (pressedKeys[value]) {
+            playerMoving = true;
+        }
+    }
+    return playerMoving;
 } 
 
 function getMovementVector(camera, player) {
