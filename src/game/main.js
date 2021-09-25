@@ -1,12 +1,12 @@
 import * as THREE from "../../node_modules/three/build/three.module.js";
 import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import { initiatePlayer, handlePlayerMovement, initiateColliders } from "./controls/player-controls.js";
+import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.js";
+import { initiateColliders } from "./controls/collision.js";
 import { handleCamereMovement } from "./controls/camera-controls.js";
 import { solarSystem } from "./maps/solar-system.js";
 import { initiateScene } from "./misc/scene-loader.js";
 import { playBackgroundMusic } from "./sounds/music.js";
 import { initiateSound } from "./sounds/sfx.js";
-import { addHelpers } from "./misc/helpers.js";
 import { initiateEventListeners } from "./misc/event-listeners.js";
 
 let camera;
@@ -39,8 +39,6 @@ function init() {
     playBackgroundMusic();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys);
-
-    addHelpers(scene); // TODO: circles dynamically calculated from sun-planet distance
 }
 
 function animate(time) {
