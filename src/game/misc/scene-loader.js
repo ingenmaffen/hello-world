@@ -1,4 +1,6 @@
-export function initiateScene(THREE, scene, map) {
+import * as THREE from "../../../node_modules/three/build/three.module.js";
+
+export function initiateScene(scene, map) {
     const sceneObjects = [];
 
     const bgGeometry = new THREE.SphereGeometry(90 * 200, 32, 16);
@@ -49,16 +51,5 @@ export function initiateScene(THREE, scene, map) {
     return {
         background,
         sceneObjects,
-    };
-}
-
-export function initiateSound(THREE, camera) {
-    const listener = new THREE.AudioListener();
-    camera.add(listener);
-    const sound = new THREE.Audio(listener);
-    const audioLoader = new THREE.AudioLoader();
-    return {
-        sound,
-        audioLoader,
     };
 }

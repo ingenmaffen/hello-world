@@ -1,4 +1,4 @@
-import { run, createNsfPlayer } from "../../node_modules/nsf-player/nsf-player.js";
+import { run, createNsfPlayer } from "../../../node_modules/nsf-player/nsf-player.js";
 
 export function playBackgroundMusic() {
     run();

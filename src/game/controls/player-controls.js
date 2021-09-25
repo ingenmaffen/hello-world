@@ -1,10 +1,12 @@
-import { Tween, Easing } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+import * as THREE from "../../../node_modules/three/build/three.module.js";
+import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+import { handleCamereMovement, getCameraDistance } from "./camera-controls.js";
+import { playCollisionSound } from "../sounds/sfx.js";
 
 const colliders = [];
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
 let maxSpeed = 30;
-let cameraDistance = 5;
 
 const keysEnum = {
     "FORWARD": "w",
@@ -15,7 +17,7 @@ const keysEnum = {
     "DOWN": "shift"
 }
 
-export function initiatePlayer(THREE) {
+export function initiatePlayer() {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
     const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
@@ -24,30 +26,7 @@ export function initiatePlayer(THREE) {
     return player;
 }
 
-export function handleCamereMovement(x, y, cameraPosition, camera, playerObject) {
-    const cameraSpeed = 0.5;
-    const yAxisTreshold = Math.PI / 18;
-    const yMinAngle = -Math.PI / 2 + yAxisTreshold;
-    const yMaxAngle = Math.PI / 2 - yAxisTreshold;
-
-    cameraPosition.x += (((x * Math.PI) / 180) * cameraSpeed) % (Math.PI * 2);
-    cameraPosition.y += (((y * Math.PI) / 180) * cameraSpeed) % (Math.PI / 2);
-    cameraPosition.y = cameraPosition.y > yMaxAngle ? yMaxAngle : cameraPosition.y;
-    cameraPosition.y = cameraPosition.y < yMinAngle ? yMinAngle : cameraPosition.y;
-
-    camera.position.x = playerObject.position.x + Math.cos(cameraPosition.x) * Math.cos(cameraPosition.y) * cameraDistance;
-    camera.position.y = playerObject.position.y + Math.sin(cameraPosition.y) * cameraDistance;
-    camera.position.z = playerObject.position.z + Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * cameraDistance;
-    camera.lookAt(playerObject.position);
-}
-
-export function changeCameraDistance(deltaY) {
-    const direction = deltaY > 0 ? 0.2 : -0.2;
-    cameraDistance += direction;
-    cameraDistance = cameraDistance < 0.2 ? 0.2 : cameraDistance;
-}
-
-export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
+export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
     // TODO: move background with player
     // TODO: maybe fix spinning (it's funny enough this way)
     playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
@@ -55,10 +34,11 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
     const verticalSpeed = 3;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
-    const vector = getMovementVector(camera, player, THREE);
-    vector.x /= cameraDistance / 5;
-    vector.y /= cameraDistance / 5;
-    vector.z /= cameraDistance / 5;
+    const vector = getMovementVector(camera, player);
+    const cDistance = getCameraDistance();
+    vector.x /= cDistance / 5;
+    vector.y /= cDistance / 5;
+    vector.z /= cDistance / 5;
     for (let [key, value] of Object.entries(pressedKeys)) {
         switch (key) {
             case keysEnum.FORWARD:
@@ -94,7 +74,7 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
         }
     }
     handleCamereMovement(0, 0, cameraPosition, camera, player);
-    handleCollision(player, THREE, audio);
+    handleCollision(player, audio);
 }
 
 export function initiateColliders(objects) {
@@ -110,7 +90,7 @@ export function initiateColliders(objects) {
     });
 }
 
-function handleCollision(player, THREE, audio) {
+function handleCollision(player, audio) {
     player.geometry.computeBoundingSphere();
     player.updateMatrixWorld();
     const playerCollider = player.geometry.boundingSphere.clone();
@@ -119,7 +99,7 @@ function handleCollision(player, THREE, audio) {
         if (playerCollider.intersectsSphere(object.collider)) {
             console.log(player)
             console.log(object.collider.radius);
-            const vector = getCollisionVector(player, object.mesh, THREE);
+            const vector = getCollisionVector(player, object.mesh);
             playCollisionSound(audio);
             animateMovement(object.mesh, vector, object.collider);
             updateCollider(object.mesh, object.collider);
@@ -131,7 +111,7 @@ function isPlayerMoving(pressedKeys) {
     return pressedKeys[keysEnum.FORWARD] || pressedKeys[keysEnum.BACKWARD] || pressedKeys[keysEnum.LEFT] || pressedKeys[keysEnum.RIGHT];
 } 
 
-function getMovementVector(camera, player, THREE) {
+function getMovementVector(camera, player) {
     return new THREE.Vector3(
         player.position.x - camera.position.x,
         player.position.y - camera.position.y,
@@ -139,7 +119,7 @@ function getMovementVector(camera, player, THREE) {
     );
 }
 
-function getCollisionVector(player, object, THREE) {
+function getCollisionVector(player, object) {
     return new THREE.Vector3(
         object.position.x - player.position.x,
         object.position.y - player.position.y,
@@ -171,13 +151,4 @@ function updateCollider(mesh, collider) {
     collider.center.x = mesh.position.x;
     collider.center.y = mesh.position.y;
     collider.center.z = mesh.position.z;
-}
-
-function playCollisionSound(audio) {
-    audio.audioLoader.load("src/assets/sounds/clack.wav", function (buffer) {
-        audio.sound.setBuffer(buffer);
-        audio.sound.setLoop(false);
-        audio.sound.setVolume(1);
-        audio.sound.play();
-    });
 }
