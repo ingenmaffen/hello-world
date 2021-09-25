@@ -1,6 +1,6 @@
 import * as THREE from "../node_modules/three/build/three.module.js";
 import { update } from "../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import { initiatePlayer, handleCamereMovement, handlePlayerMovement, initiateColliders } from "./game/player-controls.js";
+import { initiatePlayer, handleCamereMovement, changeCameraDistance, handlePlayerMovement, initiateColliders } from "./game/player-controls.js";
 import { solarSystem, helperCircles, sunPosition } from "./game/maps.js";
 import { initiateScene, initiateSound } from "./game/scene-loader.js";
 import { handleInGameMenu } from "./game/in-game-menu.js";
@@ -50,6 +50,11 @@ function init() {
         if (!isGamePaused) {
             renderer.domElement.requestPointerLock();
         }
+    });
+
+    addEventListener('wheel', (event) => {
+        changeCameraDistance(event.deltaY);
+        handleCamereMovement(0, 0, cameraPosition, camera, player);
     });
 
     // player movement

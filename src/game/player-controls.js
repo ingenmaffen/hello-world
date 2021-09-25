@@ -4,6 +4,7 @@ const colliders = [];
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
 let maxSpeed = 30;
+let cameraDistance = 5;
 
 const keysEnum = {
     "FORWARD": "w",
@@ -24,7 +25,6 @@ export function initiatePlayer(THREE) {
 }
 
 export function handleCamereMovement(x, y, cameraPosition, camera, playerObject) {
-    const distance = 5; // TODO: camera distance can be modified with mouse wheel
     const cameraSpeed = 0.5;
     const yAxisTreshold = Math.PI / 18;
     const yMinAngle = -Math.PI / 2 + yAxisTreshold;
@@ -35,24 +35,31 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
     cameraPosition.y = cameraPosition.y > yMaxAngle ? yMaxAngle : cameraPosition.y;
     cameraPosition.y = cameraPosition.y < yMinAngle ? yMinAngle : cameraPosition.y;
 
-    camera.position.x = playerObject.position.x + Math.cos(cameraPosition.x) * Math.cos(cameraPosition.y) * distance;
-    camera.position.y = playerObject.position.y + Math.sin(cameraPosition.y) * distance;
-    camera.position.z = playerObject.position.z + Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * distance;
+    camera.position.x = playerObject.position.x + Math.cos(cameraPosition.x) * Math.cos(cameraPosition.y) * cameraDistance;
+    camera.position.y = playerObject.position.y + Math.sin(cameraPosition.y) * cameraDistance;
+    camera.position.z = playerObject.position.z + Math.cos(cameraPosition.y) * Math.sin(cameraPosition.x) * cameraDistance;
     camera.lookAt(playerObject.position);
+}
+
+export function changeCameraDistance(deltaY) {
+    const direction = deltaY > 0 ? 0.2 : -0.2;
+    cameraDistance += direction;
+    cameraDistance = cameraDistance < 0.2 ? 0.2 : cameraDistance;
 }
 
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, THREE, audio) {
     // TODO: move background with player
     // TODO: maybe fix spinning (it's funny enough this way)
-    // TODO: up-down movement (space-shift, like minecraft)
     playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
     playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
-    const upDownSpeed = 3;
+    const verticalSpeed = 3;
     const spinSpeed = playerSpeed / 5;
     const moveDistance = playerSpeed * clock.getDelta();
     const vector = getMovementVector(camera, player, THREE);
+    vector.x /= cameraDistance / 5;
+    vector.y /= cameraDistance / 5;
+    vector.z /= cameraDistance / 5;
     for (let [key, value] of Object.entries(pressedKeys)) {
-        console.log(key);
         switch (key) {
             case keysEnum.FORWARD:
                 player.rotation.x += spinSpeed * DEGREE * vector.z;
@@ -79,10 +86,10 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
                 player.position.z += moveDistance * vector.x;
                 break;
             case keysEnum.UP:
-                player.position.y += upDownSpeed;
+                player.position.y += verticalSpeed;
                 break;
             case keysEnum.DOWN:
-                player.position.y += -upDownSpeed;
+                player.position.y += -verticalSpeed;
                 break;
         }
     }
