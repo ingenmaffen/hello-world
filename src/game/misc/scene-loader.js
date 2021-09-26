@@ -50,6 +50,7 @@ function addRingToPlanet(scene, sceneObjects, object) {
     if (object.ring) {
         const ringGeometry = new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 16, 100);
         const ringTexture = object.ring.texture ? new THREE.TextureLoader().load(object.ring.texture) : null;
+        ringTexture.rotation = Math.PI / 2;
         const ring = new THREE.Mesh(
             ringGeometry,
             new THREE.MeshBasicMaterial({

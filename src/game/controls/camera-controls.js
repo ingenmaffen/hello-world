@@ -17,7 +17,7 @@ export function handleCamereMovement(x, y, cameraPosition, camera, playerObject)
     camera.lookAt(playerObject.position);
 }
 
-export function changeCameraDistance(deltaY, cameraDistance) {
+export function changeCameraDistance(deltaY) {
     const direction = deltaY > 0 ? 0.2 : -0.2;
     cameraDistance += direction;
     cameraDistance = cameraDistance < 0.2 ? 0.2 : cameraDistance;

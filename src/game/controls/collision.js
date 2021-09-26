@@ -26,7 +26,7 @@ export function handleCollision(player, audio) {
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
         if (playerCollider.intersectsSphere(object.collider)) {
-            if (object.mesh.otherAttributes.unmovable) {
+            if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 updatePlayerSpeed(-1);
             } else {

@@ -124,7 +124,7 @@ export const solarSystem = {
             material: "MeshStandardMaterial",
             materialOptions: null,
             ring: {
-                // texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
+                texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
                 innerRadius: 0.94,
                 outerRadius: 30,
             },
