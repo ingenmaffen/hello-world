@@ -5,7 +5,6 @@ import { initiateColliders } from "./controls/collision.js";
 import { handleCamereMovement } from "./controls/camera-controls.js";
 import { solarSystem } from "./maps/solar-system.js";
 import { initiateScene } from "./misc/scene-loader.js";
-import { playBackgroundMusic } from "./sounds/music.js";
 import { initiateSound } from "./sounds/sfx.js";
 import { initiateEventListeners } from "./misc/event-listeners.js";
 
@@ -15,15 +14,16 @@ let renderer;
 let player;
 let clock;
 let audio;
+let cameraPosition;
 const pressedKeys = {};
-const cameraPosition = { x: (-5 * Math.PI) / 8, y: Math.PI / 9 };
 
-function init() {
+export function initMap(map) {
+    cameraPosition = { x: (-5 * Math.PI) / 8, y: Math.PI / 9 }
     clock = new THREE.Clock();
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100 * 200);
 
     scene = new THREE.Scene();
-    const loadedScene = initiateScene(scene, solarSystem);
+    const loadedScene = initiateScene(scene, map);
     initiateColliders(loadedScene.sceneObjects);
     audio = initiateSound(camera);
 
@@ -36,7 +36,7 @@ function init() {
     scene.add(player);
 
     handleCamereMovement(0, 0, cameraPosition, camera, player);
-    playBackgroundMusic();
+    map.music();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys);
 }
@@ -48,5 +48,5 @@ function animate(time) {
     handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
-init();
+initMap(solarSystem);
 requestAnimationFrame(animate);

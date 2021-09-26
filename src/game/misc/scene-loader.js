@@ -1,5 +1,4 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
-import { planetArrangement, sunPosition } from "../maps/solar-system.js";
 
 export function initiateScene(scene, map) {
     const sceneObjects = [];
@@ -7,7 +6,9 @@ export function initiateScene(scene, map) {
 
     map.objects.forEach((object) => {
         addObjectToScene(scene, sceneObjects, object);
-        addOrbitalCircles(scene);
+        if (map.sunPosition && map.planetArrangement) {
+            addOrbitalCircles(scene, map.sunPosition, map.planetArrangement);
+        }
     });
 
     return {
@@ -68,7 +69,7 @@ function addRingToPlanet(scene, sceneObjects, object) {
     }
 }
 
-function addOrbitalCircles(scene) {
+function addOrbitalCircles(scene, sunPosition, planetArrangement) {
     for (let [key, value] of Object.entries(planetArrangement)) {
         const geometry = new THREE.TorusGeometry(value.distance, 0.1, 32, 64);
         const material = new THREE.MeshBasicMaterial({
