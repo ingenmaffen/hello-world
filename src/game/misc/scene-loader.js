@@ -1,7 +1,9 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
+import { GLTFLoader } from "../../assets/objects/loader/GLTFLoader.js";
 
 export function initiateScene(scene, map) {
     const sceneObjects = [];
+    const customColliders = [];
     const background = addBackground(scene, map);
 
     map.objects.forEach((object) => {
@@ -11,9 +13,16 @@ export function initiateScene(scene, map) {
         }
     });
 
+    if (map.customObjects) {
+        map.customObjects.forEach((object) => {
+            loadCustomObject(scene, customColliders, object)
+        });
+    }
+
     return {
         background,
         sceneObjects,
+        customColliders
     };
 }
 
@@ -88,10 +97,29 @@ function addOrbitalCircles(scene, sunPosition, planetArrangement) {
 
 function addLightToObject(scene, object) {
     if (object.otherAttributes && object.otherAttributes.hasLight) {
-        const pointLight = new THREE.PointLight(object.otherAttributes.lightColor, 10, 1000, 5);
+        const lightIntensity = object.otherAttributes.lightIntensity || 10;
+        const pointLight = new THREE.PointLight(object.otherAttributes.lightColor, lightIntensity, 1000, 5);
         pointLight.position.set(object.position.x, object.position.y, object.position.z);
 
         scene.add(pointLight);
         scene.add(new THREE.AmbientLight(0x666666, 2));
     }
+}
+
+function loadCustomObject(scene, customColliders, object) {
+    const loader = new GLTFLoader();
+
+    loader.load(object.pathToFile, (gltf) => {
+        console.log(gltf);
+
+        gltf.scene.scale.x = object.scale;
+        gltf.scene.scale.y = object.scale;
+        gltf.scene.scale.z = object.scale;
+
+        gltf.scene.position.x = object.position.x;
+        gltf.scene.position.y = object.position.y;
+        gltf.scene.position.z = object.position.z;
+
+        scene.add(gltf.scene);
+    });
 }

@@ -3,7 +3,8 @@ import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.js";
 import { initiateColliders } from "./controls/collision.js";
 import { handleCamereMovement } from "./controls/camera-controls.js";
-import { solarSystem } from "./maps/solar-system.js";
+import { solarSystem } from "./maps/solar-system.js"; // TODO: remove, load main menu
+import { billiards } from "./maps/billiards.js"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.js";
 import { initiateSound } from "./sounds/sfx.js";
 import { initiateEventListeners } from "./misc/event-listeners.js";
@@ -48,5 +49,5 @@ function animate(time) {
     handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
-initMap(solarSystem);
+initMap(billiards);
 requestAnimationFrame(animate);
