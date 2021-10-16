@@ -20,10 +20,10 @@ export const billiards = {
         {
             name: "table",
             pathToFile: `${objectsPathBase}/billiards.glb`,
-            scale: 10,
+            scale: 5,
             position: {
                 x: 0,
-                y: -22,
+                y: -2,
                 z: 0
             },
             colliders: []
