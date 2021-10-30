@@ -1,6 +1,8 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
 import { GLTFLoader } from "../../assets/objects/loader/GLTFLoader.js";
 
+const debugCustomColliders = true;
+
 export function initiateScene(scene, map) {
     const sceneObjects = [];
     const customColliders = [];
@@ -108,10 +110,7 @@ function addLightToObject(scene, object) {
 
 function loadCustomObject(scene, customColliders, object) {
     const loader = new GLTFLoader();
-
     loader.load(object.pathToFile, (gltf) => {
-        console.log(gltf);
-
         gltf.scene.scale.x = object.scale;
         gltf.scene.scale.y = object.scale;
         gltf.scene.scale.z = object.scale;
@@ -121,5 +120,14 @@ function loadCustomObject(scene, customColliders, object) {
         gltf.scene.position.z = object.position.z;
 
         scene.add(gltf.scene);
+    });
+
+    object.colliders.forEach(colliderObject => {
+        if (debugCustomColliders) {
+            colliderObject.materialOptions.opacity = 1;
+            colliderObject.materialOptions.wireframe = true;
+        }
+        colliderObject.otherAttributes = object.otherAttributes;
+        addObjectToScene(scene, customColliders, colliderObject);
     });
 }
