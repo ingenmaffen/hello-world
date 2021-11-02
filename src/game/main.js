@@ -34,7 +34,7 @@ export function initMap(map) {
     document.body.appendChild(renderer.domElement);
     renderer.domElement.requestPointerLock();
 
-    player = initiatePlayer();
+    player = initiatePlayer(map.playerConfig);
     scene.add(player);
 
     handleCamereMovement(0, 0, cameraPosition, camera, player);

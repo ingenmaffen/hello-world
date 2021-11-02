@@ -17,6 +17,12 @@ const tablePosition = {
     z: 0,
 }
 
+const firstBallPosition = {
+    x: 25,
+    y: 0,
+    z: 0
+}
+
 
 /*
  * Mandatory attributes for objects: geometry, constructorParams and material
@@ -25,9 +31,14 @@ export const billiards = {
     name: "Solar System",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playBilliardMissionMusic,
+    playerConfig: {
+        color: 0xFFFFFF,
+        texture: 'none'
+    },
+    // fog: true,
     objects: [
         {
-            name: "sun",
+            name: "light",
             texture: `${texturePathBase}/2k_venus_atmosphere.jpg`,
             position: {
                 ...sunPosition,
@@ -39,11 +50,129 @@ export const billiards = {
                 lightColor: 0xE1B779,
                 lightIntensity: 3
             },
-            constructorParams: `${1}, 6${0.8  * tableScale}, 32`,
+            constructorParams: `${1}, 32, 32`,
             geometry: "SphereGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
-        }
+        },
+        {
+            name: 'ball1',
+            texture: `${texturePathBase}/2k_earth_daymap.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                ...firstBallPosition
+            }
+        },
+        {
+            name: 'ball2',
+            texture: `${texturePathBase}/2k_venus_atmosphere.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 3.5,
+                y: 0,
+                z: firstBallPosition.z + 2
+            }
+        },
+        {
+            name: 'ball3',
+            texture: `${texturePathBase}/2k_mars.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 3.5,
+                y: 0,
+                z: firstBallPosition.z - 2
+            }
+        },
+        {
+            name: 'ball4',
+            texture: `${texturePathBase}/2k_sun.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 7,
+                y: 0,
+                z: firstBallPosition.z 
+            }
+        },
+        {
+            name: 'ball5',
+            texture: `${texturePathBase}/2k_mercury.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 7,
+                y: 0,
+                z: firstBallPosition.z - 4
+            }
+        },
+        {
+            name: 'ball6',
+            texture: `${texturePathBase}/2k_moon.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 7,
+                y: 0,
+                z: firstBallPosition.z + 4
+            }
+        },
+        {
+            name: 'ball7',
+            texture: `${texturePathBase}/2k_jupiter.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 10.5,
+                y: 0,
+                z: firstBallPosition.z + 2
+            }
+        },
+        {
+            name: 'ball8',
+            texture: `${texturePathBase}/2k_neptune.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 10.5,
+                y: 0,
+                z: firstBallPosition.z - 2
+            }
+        },,
+        {
+            name: 'ball9',
+            texture: `${texturePathBase}/2k_uranus.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 10.5,
+                y: 0,
+                z: firstBallPosition.z + 6
+            }
+        },
+        {
+            name: 'ball10',
+            texture: `${texturePathBase}/2k_saturn.jpg`,
+            constructorParams: `${2}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            position: {
+                x: firstBallPosition.x + 10.5,
+                y: 0,
+                z: firstBallPosition.z - 6
+            }
+        },
     ],
     customObjects: [
         {

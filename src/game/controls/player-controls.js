@@ -15,11 +15,13 @@ const keysEnum = {
     "DOWN": "shift"
 }
 
-export function initiatePlayer() {
+export function initiatePlayer(playerConfig) {
     const texturePathBase = "src/assets/textures";
     const geometry = new THREE.SphereGeometry(2, 32, 16);
-    const texture = new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
-    const player = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ map: texture }));
+    const texture = playerConfig && playerConfig.texture === 'none'
+        ? null  
+        : new THREE.TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
+    const player = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ map: texture, color: playerConfig && playerConfig.color }));
     player.rotation.z = -25 * DEGREE;
     return player;
 }
