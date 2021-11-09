@@ -1,5 +1,6 @@
 import { handleInGameMenu } from "../menu/in-game-menu.js";
 import { handleCamereMovement, changeCameraDistance } from "../controls/camera-controls.js";
+import { buildUpMovementOnMouseDown, movePlayerOnMouseUp } from "../controls/player-controls.js"
 
 let renderer;
 let camera;
@@ -23,6 +24,8 @@ export function initiateEventListeners(_renderer, _camera, _cameraPosition, _pla
     // player movement
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
 
     // event listener on resize
     window.addEventListener("resize", handleWindowResize);
@@ -35,6 +38,8 @@ export function removeEventListeners() {
     window.removeEventListener("keydown", handleKeyDown);
     window.removeEventListener("keyup", handleKeyUp);
     window.removeEventListener("resize", handleWindowResize);
+    window.removeEventListener("mousedown", handleMouseDown);
+    window.removeEventListener("mouseup", handleMouseUp);
 }
 
 function unPauseGame() {
@@ -92,4 +97,16 @@ function handleKeyDown(event) {
 
 function handleKeyUp(event) {
     delete pressedKeys[event.key.toLowerCase()];
+}
+
+function handleMouseDown(event) {
+    if (!isGamePaused) {
+        buildUpMovementOnMouseDown();
+    }
+}
+
+function handleMouseUp(event) {
+    if (!isGamePaused) {
+        movePlayerOnMouseUp();
+    }
 }

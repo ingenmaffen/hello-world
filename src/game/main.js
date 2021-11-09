@@ -34,12 +34,11 @@ export function initMap(map) {
     document.body.appendChild(renderer.domElement);
     renderer.domElement.requestPointerLock();
 
-    player = initiatePlayer(map.playerConfig);
-    scene.add(player);
+    player = initiatePlayer(map.playerConfig, scene);
 
     handleCamereMovement(0, 0, cameraPosition, camera, player);
     initiateNsfPlayer();
-    setVolume(0.25);
+    setVolume(0.025);
     map.music();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys);

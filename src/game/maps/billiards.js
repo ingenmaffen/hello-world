@@ -33,7 +33,11 @@ export const billiards = {
     music: playBilliardMissionMusic,
     playerConfig: {
         color: 0xFFFFFF,
-        texture: 'none'
+        texture: 'none',
+        normalMovementDisabled: true,
+        yAxisDisabledOnClick: true,
+        moveOnClick: true,
+        retainMomentum: true
     },
     // fog: true,
     objects: [
