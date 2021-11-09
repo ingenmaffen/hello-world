@@ -28,7 +28,7 @@ const firstBallPosition = {
  * Mandatory attributes for objects: geometry, constructorParams and material
  */
 export const billiards = {
-    name: "Solar System",
+    name: "Billiards",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playBilliardMissionMusic,
     playerConfig: {

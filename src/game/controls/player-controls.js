@@ -57,7 +57,7 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
 
 export function buildUpMovementOnMouseDown() {
     isMouseHeldDown = true;
-    playerSpeed = playerSpeed > maxSpeed ? maxSpeed : playerSpeed + 0.1;
+    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
     updateMouseMoveArrow(playerSpeed);
     setTimeout(() => {
         if (isMouseHeldDown) {

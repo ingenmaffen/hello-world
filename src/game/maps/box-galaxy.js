@@ -52,7 +52,7 @@ const sunPosition = {
  * Mandatory attributes for objects: geometry, constructorParams and material
  */
 export const boxSolarSystem = {
-    name: "Solar System",
+    name: "Box Galaxy",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playEndlessModeMusic,
     planetArrangement,

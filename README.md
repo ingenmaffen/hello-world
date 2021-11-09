@@ -13,6 +13,7 @@ TODO
 - Textures:
     - Solar System: [Solar System Scope](https://www.solarsystemscope.com/textures/)
     - Collision sound: ["billiard ball clack" from freesound](https://freesound.org/people/Za-Games/sounds/539854/)
+    - Wood texture (bowling map): [Fine Wood 0086](https://www.textures.com/download/WoodFine0086/127239)
 
 ## Contribution
 

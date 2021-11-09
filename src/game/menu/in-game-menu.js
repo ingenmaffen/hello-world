@@ -6,6 +6,7 @@ import { removeEventListeners } from "../misc/event-listeners.js";
 import { solarSystem } from "../maps/solar-system.js";
 import { billiards } from "../maps/billiards.js";
 import { boxSolarSystem } from "../maps/box-galaxy.js";
+import { bowling } from "../maps/bowling.js";
 
 export function handleInGameMenu(menuOpen, unPauseGame) {
     if (!menuOpen) {
@@ -15,12 +16,16 @@ export function handleInGameMenu(menuOpen, unPauseGame) {
             debugLoadScene(solarSystem);
             unPauseGame();
         }, "other-button");
+        appendButton("Load Map: Box Galaxy", () => {
+            debugLoadScene(boxSolarSystem);
+            unPauseGame();
+        }, "other-button");
         appendButton("Load Map: Billiards", () => {
             debugLoadScene(billiards);
             unPauseGame();
         }, "other-button");
-        appendButton("Load Map: Box Galaxy", () => {
-            debugLoadScene(boxSolarSystem);
+        appendButton("Load Map: Bowling", () => {
+            debugLoadScene(bowling);
             unPauseGame();
         }, "other-button");
     } else {

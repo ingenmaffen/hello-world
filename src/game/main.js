@@ -5,6 +5,7 @@ import { initiateColliders } from "./controls/collision.js";
 import { handleCamereMovement } from "./controls/camera-controls.js";
 import { solarSystem } from "./maps/solar-system.js"; // TODO: remove, load main menu
 import { billiards } from "./maps/billiards.js"; // TODO: debug
+import { bowling } from "./maps/bowling.js"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.js";
 import { initiateSound } from "./sounds/sfx.js";
 import { setVolume, initiateNsfPlayer } from "./sounds/music.js";
@@ -38,7 +39,7 @@ export function initMap(map) {
 
     handleCamereMovement(0, 0, cameraPosition, camera, player);
     initiateNsfPlayer();
-    setVolume(0.025);
+    setVolume(0.5);
     map.music();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys);
@@ -51,5 +52,5 @@ function animate(time) {
     handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
-initMap(billiards);
+initMap(bowling);
 requestAnimationFrame(animate);

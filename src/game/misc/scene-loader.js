@@ -39,6 +39,10 @@ function addBackground(scene, map) {
 function addObjectToScene(scene, sceneObjects, object) {
     const geometry = eval(`new THREE.${object.geometry}(${object.constructorParams})`);
     const texture = object.texture ? new THREE.TextureLoader().load(object.texture) : null;
+    if (object?.otherAttributes?.repeatTexture) {
+        // TODO: fix texture repeat
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+    }
     const mesh = new THREE.Mesh(
         geometry,
         new THREE[object.material]({
