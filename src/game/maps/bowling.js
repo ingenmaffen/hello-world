@@ -8,7 +8,7 @@ const bowlingPinScale = 1;
 const firstPinPosition = {
     x: 0,
     y: -1,
-    z: 5
+    z: 85
 }
 
 
@@ -44,7 +44,7 @@ export const bowling = {
                 colliderType: 'box',
                 repeatTexture: true
             },
-            constructorParams: `10, 1, 100`,
+            constructorParams: `15, 1, 100`,
             geometry: "BoxGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,

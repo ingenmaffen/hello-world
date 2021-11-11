@@ -154,7 +154,7 @@ function getMovementVector(camera, player) {
 function initiatePlayerMouseMovementHelper(scene) {
     const arrowBody = new THREE.CylinderGeometry(0.2, 0.2, 1, 32);
     const arrowHead = new THREE.CylinderGeometry(0.01, 0.5, 1, 32);
-    const arrowMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, });
+    const arrowMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0, transparent: true});
 
     const bodyMesh = new THREE.Mesh(arrowBody, arrowMaterial);
     const headMesh = new THREE.Mesh(arrowHead, arrowMaterial);
@@ -177,4 +177,5 @@ function updateMouseMoveArrow(distance) {
     bodyMesh.scale.y = distance + 1;
     bodyMesh.position.y = (distance + 1) / 2;
     headMesh.position.y = distance + 1;
+    bodyMesh.material.transparent = !isMouseHeldDown;
 }
