@@ -173,9 +173,11 @@ function initiatePlayerMouseMovementHelper(scene) {
 
 function updateMouseMoveArrow(distance) {
     // TODO: arrow rotation should use movementVector (both for yAxis disabled and enabled) 
-    const [bodyMesh, headMesh] = mouseHoldArrow.children;
-    bodyMesh.scale.y = distance + 1;
-    bodyMesh.position.y = (distance + 1) / 2;
-    headMesh.position.y = distance + 1;
-    bodyMesh.material.transparent = !isMouseHeldDown;
+    if (mouseHoldArrow) {
+        const [bodyMesh, headMesh] = mouseHoldArrow.children;
+        bodyMesh.scale.y = distance + 1;
+        bodyMesh.position.y = (distance + 1) / 2;
+        headMesh.position.y = distance + 1;
+        bodyMesh.material.transparent = !isMouseHeldDown;
+    }
 }

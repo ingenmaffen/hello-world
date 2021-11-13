@@ -1,7 +1,7 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 import { playCollisionSound } from "../sounds/sfx.js";
-import { updatePlayerSpeed } from "./player-controls.js";
+import { getPlayerSpeed, updatePlayerSpeed } from "./player-controls.js";
 
 let colliders;
 
@@ -41,7 +41,6 @@ export function handleCollision(player, audio) {
                 playCollisionSound(audio);
                 animateMovement(object.mesh, vector, object.collider);
                 updateCollider(object.mesh, object.collider);
-                updatePlayerSpeed(-1); // TODO: slowing down should relate how big was the object that was hit
             }
         }
     });
@@ -53,11 +52,12 @@ function getCollisionVector(player, object) {
         object.position.y - player.position.y,
         object.position.z - player.position.z
     );
-    // const playerSpeed = getPlayerSpeed();
-    // vector.x = 1 / vector.x * playerSpeed;
-    // vector.y = 1 / vector.y * playerSpeed;
-    // vector.z = 1 / vector.z * playerSpeed;
-    return vector;
+    const playerSize = player.geometry.parameters.radius;
+    const objectSize = object.geometry.parameters.radius;
+    const vectorScale = (getPlayerSpeed()) * playerSize / objectSize;
+    const updatedPlayerSpeed = playerSize / objectSize > 0 ? -1 * objectSize / playerSize : getPlayerSpeed() * objectSize / playerSize;
+    updatePlayerSpeed(updatedPlayerSpeed);
+    return vector.addScalar(vectorScale);
 }
 
 function animateMovement(object, vector, collider) {
