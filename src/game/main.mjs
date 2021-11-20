@@ -2,7 +2,7 @@ import * as THREE from "../../node_modules/three/build/three.module.js";
 import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
 import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.mjs";
 import { initiateColliders } from "./controls/collision.mjs";
-import { handleCamereMovement } from "./controls/camera-controls.mjs";
+import { handleCameraMovement } from "./controls/camera-controls.mjs";
 import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load main menu
 import { billiards } from "./maps/billiards.mjs"; // TODO: debug
 import { bowling } from "./maps/bowling.mjs"; // TODO: debug
@@ -37,7 +37,7 @@ export function initMap(map) {
 
     player = initiatePlayer(map.playerConfig, scene);
 
-    handleCamereMovement(0, 0, cameraPosition, camera, player);
+    handleCameraMovement(0, 0, cameraPosition, camera, player);
     initiateNsfPlayer();
     setVolume(0.5);
     map.music();

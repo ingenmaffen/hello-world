@@ -1,13 +1,13 @@
 let cameraDistance = 5;
 
-export function handleCamereMovement(x, y, cameraPosition, camera, playerObject) {
+export function handleCameraMovement(x, y, cameraPosition, camera, playerObject) {
     const cameraSpeed = 0.5;
     const yAxisTreshold = Math.PI / 18;
     const yMinAngle = -Math.PI / 2 + yAxisTreshold;
     const yMaxAngle = Math.PI / 2 - yAxisTreshold;
 
-    cameraPosition.x += (((x * Math.PI) / 180) * cameraSpeed) % (Math.PI * 2);
-    cameraPosition.y += (((y * Math.PI) / 180) * cameraSpeed) % (Math.PI / 2);
+    cameraPosition.x = (cameraPosition.x + (((x * Math.PI) / 180) * cameraSpeed)) % (Math.PI * 2);
+    cameraPosition.y = (cameraPosition.y + (((y * Math.PI) / 180) * cameraSpeed)) % (Math.PI / 2);
     cameraPosition.y = cameraPosition.y > yMaxAngle ? yMaxAngle : cameraPosition.y;
     cameraPosition.y = cameraPosition.y < yMinAngle ? yMinAngle : cameraPosition.y;
 

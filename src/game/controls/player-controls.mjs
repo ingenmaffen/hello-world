@@ -1,5 +1,5 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
-import { handleCamereMovement, getCameraDistance } from "./camera-controls.mjs";
+import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
 import { handleCollision } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
@@ -122,7 +122,7 @@ function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera
                 break;
         }
     }
-    handleCamereMovement(0, 0, cameraPosition, camera, player);
+    handleCameraMovement(0, 0, cameraPosition, camera, player);
     handleCollision(player, audio);
 }
 

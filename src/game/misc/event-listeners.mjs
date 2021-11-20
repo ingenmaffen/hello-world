@@ -1,5 +1,5 @@
 import { handleInGameMenu } from "../menu/in-game-menu.mjs";
-import { handleCamereMovement, changeCameraDistance } from "../controls/camera-controls.mjs";
+import { handleCameraMovement, changeCameraDistance } from "../controls/camera-controls.mjs";
 import { buildUpMovementOnMouseDown, movePlayerOnMouseUp } from "../controls/player-controls.mjs"
 
 let renderer;
@@ -64,7 +64,7 @@ function handleWindowResize() {
 
 function handleMouseMove(event) {
     if (!isGamePaused) {
-        handleCamereMovement(event.movementX, event.movementY, cameraPosition, camera, player);
+        handleCameraMovement(event.movementX, event.movementY, cameraPosition, camera, player);
     }
 }
 
@@ -76,7 +76,7 @@ function handleClick(event) {
 
 function handleScroll(event) {
     changeCameraDistance(event.deltaY);
-    handleCamereMovement(0, 0, cameraPosition, camera, player);
+    handleCameraMovement(0, 0, cameraPosition, camera, player);
 }
 
 function handleKeyDown(event) {
