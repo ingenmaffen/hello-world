@@ -8,14 +8,16 @@ let colliders;
 export function initiateColliders(objects) {
     colliders = [];
     objects.forEach((mesh) => {
-        if (isObjectBox(mesh)) {
-            if(mesh && mesh.otherAttributes && mesh.otherAttributes.unmovable) {
+        switch (getMeshColliderType(mesh)) {
+            case 'box':
                 createBoxCollider(mesh, colliders);
-            } else {
+                break;
+            case 'innerSphere':
                 createSphereColliderForBox(mesh, colliders);
-            }
-        } else {
-            createDefaultCollider(mesh, colliders);
+                break;
+            default:
+                createDefaultCollider(mesh, colliders);
+                break;
         }
     });
 }
@@ -26,17 +28,11 @@ export function handleCollision(player, audio) {
     const playerCollider = player.geometry.boundingSphere.clone();
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
-        if (
-            isObjectBox(object.mesh)
-                ? playerCollider.intersectsBox(object.collider)
-                : playerCollider.intersectsSphere(object.collider)
-        ) {
+        if (isPlayerCollidingWithObject(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 updatePlayerSpeed(-1);
             } else {
-                // console.log(player)
-                // console.log(object.collider.radius);
                 const vector = getCollisionVector(player, object.mesh);
                 playCollisionSound(audio);
                 animateMovement(object.mesh, vector, object.collider);
@@ -53,10 +49,10 @@ function getCollisionVector(player, object) {
         object.position.z - player.position.z
     );
     const playerSize = player.geometry.parameters.radius;
-    const objectSize = object.geometry.parameters.radius;
+    const objectSize = object.geometry.parameters.radius || object.geometry.parameters.width;
     const vectorScale = (getPlayerSpeed()) * playerSize / objectSize;
     const updatedPlayerSpeed = playerSize / objectSize > 0 ? -1 * objectSize / playerSize : getPlayerSpeed() * objectSize / playerSize;
-    updatePlayerSpeed(updatedPlayerSpeed);
+    updatePlayerSpeed(updatedPlayerSpeed || -1);
     return vector.addScalar(vectorScale);
 }
 
@@ -88,8 +84,18 @@ function updateCollider(mesh, collider) {
     collider.center.z = mesh.position.z;
 }
 
+function isPlayerCollidingWithObject(playerCollider, object) {
+    return isObjectBox(object.mesh)
+        ? playerCollider.intersectsBox(object.collider)
+        : playerCollider.intersectsSphere(object.collider)
+}
+
 function isObjectBox(mesh) {
     return mesh && mesh.otherAttributes && mesh.otherAttributes.colliderType === "box";
+}
+
+function getMeshColliderType(mesh) {
+    return mesh && mesh.otherAttributes && mesh.otherAttributes.colliderType;
 }
 
 function createDefaultCollider(mesh, colliders) {

@@ -64,7 +64,7 @@ function addObjectToScene(scene, sceneObjects, object) {
 
 function addRingToPlanet(scene, sceneObjects, object) {
     if (object.ring) {
-        const ringGeometry = object.otherAttributes && object.otherAttributes.colliderType === "box" ?
+        const ringGeometry = object.ring.type === "box" ?
             new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 4, 4) :
             new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 16, 100);
         const ringTexture = object.ring.texture ? new THREE.TextureLoader().load(object.ring.texture) : null;

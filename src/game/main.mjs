@@ -4,6 +4,7 @@ import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls
 import { initiateColliders } from "./controls/collision.mjs";
 import { handleCameraMovement } from "./controls/camera-controls.mjs";
 import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load main menu
+import { boxSolarSystem } from "./maps/box-galaxy.mjs"; // TODO: debug
 import { billiards } from "./maps/billiards.mjs"; // TODO: debug
 import { bowling } from "./maps/bowling.mjs"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.mjs";
@@ -52,5 +53,5 @@ function animate(time) {
     handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
-initMap(bowling);
+initMap(boxSolarSystem);
 requestAnimationFrame(animate);

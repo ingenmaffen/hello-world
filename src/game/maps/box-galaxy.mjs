@@ -69,7 +69,7 @@ export const boxSolarSystem = {
                 destroysObjects: true,
                 hasLight: true,
                 lightColor: 0xf55607,
-                colliderType: 'box'
+                colliderType: "box"
             },
             constructorParams: `109, 109, 109`,
             geometry: "BoxGeometry",
@@ -85,7 +85,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.mercury.degree) * planetArrangement.mercury.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -101,7 +101,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.venus.degree) * planetArrangement.venus.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -117,7 +117,7 @@ export const boxSolarSystem = {
                 z: -2,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `0.25, 0.25, 0.25`,
             geometry: "BoxGeometry",
@@ -133,7 +133,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.mars.degree) * planetArrangement.mars.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -149,7 +149,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.jupiter.degree) * planetArrangement.jupiter.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `22, 22, 22`,
             geometry: "BoxGeometry",
@@ -165,7 +165,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.saturn.degree) * planetArrangement.saturn.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `19, 19, 19`,
             geometry: "BoxGeometry",
@@ -175,6 +175,7 @@ export const boxSolarSystem = {
                 texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
                 innerRadius: 0.94,
                 outerRadius: 30,
+                type: "box"
             },
         },
         {
@@ -186,7 +187,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.uranus.degree) * planetArrangement.uranus.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `8, 8, 8`,
             geometry: "BoxGeometry",
@@ -202,7 +203,7 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.neptune.degree) * planetArrangement.neptune.distance,
             },
             otherAttributes: {
-                colliderType: 'box'
+                colliderType: "innerSphere"
             },
             constructorParams: `7.5, 7.5, 7.5`,
             geometry: "BoxGeometry",
