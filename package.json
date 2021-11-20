@@ -5,7 +5,8 @@
   "main": "./main.js",
   "scripts": {
     "start": "electron ./main.js",
-    "build": "electron-builder build"
+    "build": "electron-builder build",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "Rabi Róbert <ingenmaffen@gmail.com>",
   "license": "MIT",
@@ -16,7 +17,8 @@
   },
   "devDependencies": {
     "electron": "13.3.0",
-    "electron-builder": "22.10.5"
+    "electron-builder": "22.10.5",
+    "jest": "27.3.1"
   },
   "build": {
     "appId": "hello-world",

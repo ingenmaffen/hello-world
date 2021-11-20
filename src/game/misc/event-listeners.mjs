@@ -1,6 +1,6 @@
-import { handleInGameMenu } from "../menu/in-game-menu.js";
-import { handleCamereMovement, changeCameraDistance } from "../controls/camera-controls.js";
-import { buildUpMovementOnMouseDown, movePlayerOnMouseUp } from "../controls/player-controls.js"
+import { handleInGameMenu } from "../menu/in-game-menu.mjs";
+import { handleCamereMovement, changeCameraDistance } from "../controls/camera-controls.mjs";
+import { buildUpMovementOnMouseDown, movePlayerOnMouseUp } from "../controls/player-controls.mjs"
 
 let renderer;
 let camera;

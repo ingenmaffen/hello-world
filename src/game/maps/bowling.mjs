@@ -1,4 +1,4 @@
-import { playBilliardMissionMusic } from "../sounds/music.js";
+import { playBilliardMissionMusic } from "../sounds/music.mjs";
 
 const texturePathBase = "src/assets/textures";
 const objectsPathBase = "src/assets/objects";

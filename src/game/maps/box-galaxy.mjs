@@ -1,4 +1,4 @@
-import { playEndlessModeMusic } from "../sounds/music.js";
+import { playEndlessModeMusic } from "../sounds/music.mjs";
 
 const DEGREE = Math.PI / 180;
 

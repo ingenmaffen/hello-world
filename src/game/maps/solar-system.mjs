@@ -1,4 +1,4 @@
-import { playEndlessModeMusic } from "../sounds/music.js";
+import { playEndlessModeMusic } from "../sounds/music.mjs";
 
 // TODO: extend map background (geometry, material, optional params)
 // TODO: add player params (geometry, material, texture, optional params)

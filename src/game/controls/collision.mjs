@@ -1,7 +1,7 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import { playCollisionSound } from "../sounds/sfx.js";
-import { getPlayerSpeed, updatePlayerSpeed } from "./player-controls.js";
+import { playCollisionSound } from "../sounds/sfx.mjs";
+import { getPlayerSpeed, updatePlayerSpeed } from "./player-controls.mjs";
 
 let colliders;
 

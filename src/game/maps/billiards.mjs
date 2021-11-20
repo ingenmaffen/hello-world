@@ -1,4 +1,4 @@
-import { playBilliardMissionMusic } from "../sounds/music.js";
+import { playBilliardMissionMusic } from "../sounds/music.mjs";
 
 export const sunPosition = {
     x: 0,

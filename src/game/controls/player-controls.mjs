@@ -1,6 +1,6 @@
 import * as THREE from "../../../node_modules/three/build/three.module.js";
-import { handleCamereMovement, getCameraDistance } from "./camera-controls.js";
-import { handleCollision } from "./collision.js";
+import { handleCamereMovement, getCameraDistance } from "./camera-controls.mjs";
+import { handleCollision } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;

@@ -1,15 +1,15 @@
 import * as THREE from "../../node_modules/three/build/three.module.js";
 import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
-import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.js";
-import { initiateColliders } from "./controls/collision.js";
-import { handleCamereMovement } from "./controls/camera-controls.js";
-import { solarSystem } from "./maps/solar-system.js"; // TODO: remove, load main menu
-import { billiards } from "./maps/billiards.js"; // TODO: debug
-import { bowling } from "./maps/bowling.js"; // TODO: debug
-import { initiateScene } from "./misc/scene-loader.js";
-import { initiateSound } from "./sounds/sfx.js";
-import { setVolume, initiateNsfPlayer } from "./sounds/music.js";
-import { initiateEventListeners } from "./misc/event-listeners.js";
+import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.mjs";
+import { initiateColliders } from "./controls/collision.mjs";
+import { handleCamereMovement } from "./controls/camera-controls.mjs";
+import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load main menu
+import { billiards } from "./maps/billiards.mjs"; // TODO: debug
+import { bowling } from "./maps/bowling.mjs"; // TODO: debug
+import { initiateScene } from "./misc/scene-loader.mjs";
+import { initiateSound } from "./sounds/sfx.mjs";
+import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
+import { initiateEventListeners } from "./misc/event-listeners.mjs";
 
 let camera;
 let scene;

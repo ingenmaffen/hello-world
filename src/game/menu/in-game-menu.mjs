@@ -1,12 +1,12 @@
-import { initMap } from "../main.js";
-import { stopMusic } from "../sounds/music.js";
-import { removeEventListeners } from "../misc/event-listeners.js";
+import { initMap } from "../main.mjs";
+import { stopMusic } from "../sounds/music.mjs";
+import { removeEventListeners } from "../misc/event-listeners.mjs";
 
 // maps
-import { solarSystem } from "../maps/solar-system.js";
-import { billiards } from "../maps/billiards.js";
-import { boxSolarSystem } from "../maps/box-galaxy.js";
-import { bowling } from "../maps/bowling.js";
+import { solarSystem } from "../maps/solar-system.mjs";
+import { billiards } from "../maps/billiards.mjs";
+import { boxSolarSystem } from "../maps/box-galaxy.mjs";
+import { bowling } from "../maps/bowling.mjs";
 
 export function handleInGameMenu(menuOpen, unPauseGame) {
     if (!menuOpen) {
