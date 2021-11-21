@@ -73,7 +73,7 @@ export function movePlayerOnMouseUp() {
     // TODO: update player position on movement and decrease momentum (playerSpeed)
 }
 
-export function updatePlayerSpeed(value) {
+export function setPlayerSpeed(value) {
     playerSpeed = value;
 }
 

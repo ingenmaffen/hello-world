@@ -1,7 +1,7 @@
 import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
-import { getPlayerSpeed, updatePlayerSpeed } from "./player-controls.mjs";
+import { getPlayerSpeed, setPlayerSpeed } from "./player-controls.mjs";
 
 let colliders;
 
@@ -31,7 +31,7 @@ export function handleCollision(player, audio) {
         if (isPlayerCollidingWithObject(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
-                updatePlayerSpeed(-1);
+                setPlayerSpeed(-1);
             } else {
                 const vector = getCollisionVector(player, object.mesh);
                 playCollisionSound(audio);
@@ -51,8 +51,8 @@ function getCollisionVector(player, object) {
     const playerSize = player.geometry.parameters.radius;
     const objectSize = object.geometry.parameters.radius || object.geometry.parameters.width;
     const vectorScale = (getPlayerSpeed()) * playerSize / objectSize;
-    const updatedPlayerSpeed = playerSize / objectSize > 0 ? -1 * objectSize / playerSize : getPlayerSpeed() * objectSize / playerSize;
-    updatePlayerSpeed(updatedPlayerSpeed || -1);
+    const updatedPlayerSpeed = playerSize < objectSize ? -1 * objectSize / playerSize : getPlayerSpeed() * objectSize / playerSize;
+    setPlayerSpeed(updatedPlayerSpeed || -1);
     return vector.addScalar(vectorScale);
 }
 
