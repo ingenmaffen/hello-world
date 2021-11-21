@@ -12,6 +12,7 @@ module.exports = {
     "js",
     "jsx",
   ],
-  extensionsToTreatAsEsm: ['.jsx'],
-  testEnvironment: "jsdom"
+  extensionsToTreatAsEsm: [".jsx"],
+  testEnvironment: "jsdom",
+  transform: {}
 };

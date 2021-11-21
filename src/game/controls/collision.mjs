@@ -1,5 +1,5 @@
-import * as THREE from "../../../node_modules/three/build/three.module.js";
-import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_modules/three/build/three.module.mjs";
+import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
 import { getPlayerSpeed, updatePlayerSpeed } from "./player-controls.mjs";
 
@@ -43,7 +43,7 @@ export function handleCollision(player, audio) {
 }
 
 function getCollisionVector(player, object) {
-    const vector = new THREE.Vector3(
+    const vector = new Vector3(
         object.position.x - player.position.x,
         object.position.y - player.position.y,
         object.position.z - player.position.z
@@ -110,9 +110,9 @@ function createDefaultCollider(mesh, colliders) {
 }
 
 function createSphereColliderForBox(mesh, colliders) {
-    const sphereColliderMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(mesh.geometry.parameters.width / 2, 16, 16),
-        new THREE.MeshBasicMaterial()
+    const sphereColliderMesh = new Mesh(
+        new SphereGeometry(mesh.geometry.parameters.width / 2, 16, 16),
+        new MeshBasicMaterial()
     );
     sphereColliderMesh.position.x = mesh.position.x;
     sphereColliderMesh.position.y = mesh.position.y;

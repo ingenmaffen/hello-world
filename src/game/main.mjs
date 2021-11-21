@@ -1,5 +1,5 @@
-import * as THREE from "../../node_modules/three/build/three.module.js";
-import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.js";
+import * as THREE from "../../node_modules/three/build/three.module.mjs";
+import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.mjs";
 import { initiateColliders } from "./controls/collision.mjs";
 import { handleCameraMovement } from "./controls/camera-controls.mjs";

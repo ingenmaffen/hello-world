@@ -4,6 +4,7 @@
   "description": "A simple game made with Electron and Three.js",
   "main": "./main.js",
   "scripts": {
+    "postinstall": "node ./post-install.js",
     "start": "electron ./main.js",
     "build": "electron-builder build",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
