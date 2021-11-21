@@ -10,10 +10,11 @@ export function initiateScene(scene, map) {
 
     map.objects.forEach((object) => {
         addObjectToScene(scene, sceneObjects, object);
-        if (map.sunPosition && map.planetArrangement) {
-            addOrbitalCircles(scene, map.sunPosition, map.planetArrangement);
-        }
     });
+    
+    if (map.sunPosition && map.planetArrangement) {
+        addOrbitalCircles(scene, map.sunPosition, map.planetArrangement);
+    }
 
     if (map.customObjects) {
         map.customObjects.forEach((object) => {
@@ -68,7 +69,9 @@ function addRingToPlanet(scene, sceneObjects, object) {
             new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 4, 4) :
             new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 16, 100);
         const ringTexture = object.ring.texture ? new THREE.TextureLoader().load(object.ring.texture) : null;
-        ringTexture.rotation = Math.PI / 2;
+        if (ringTexture) {
+            ringTexture.rotation = Math.PI / 2;
+        }
         const ring = new THREE.Mesh(
             ringGeometry,
             new THREE.MeshBasicMaterial({

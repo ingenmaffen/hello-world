@@ -49,7 +49,6 @@ export const billiards = {
             },
             otherAttributes: {
                 unmovable: true,
-                destroysObjects: true,
                 hasLight: true,
                 lightColor: 0xE1B779,
                 lightIntensity: 3

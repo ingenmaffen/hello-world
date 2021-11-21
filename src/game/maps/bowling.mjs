@@ -38,9 +38,6 @@ export const bowling = {
             },
             otherAttributes: {
                 unmovable: true,
-                destroysObjects: true,
-                hasLight: true,
-                lightColor: 0xf55607,
                 colliderType: 'box',
                 repeatTexture: true
             },
