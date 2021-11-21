@@ -1,10 +1,10 @@
-import * as THREE from "../../../node_modules/three/build/three.module.mjs";
+import { AudioListener, AudioLoader, Audio } from "../../../node_modules/three/build/three.module.mjs";
 
 export function initiateSound(camera) {
-    const listener = new THREE.AudioListener();
+    const listener = new AudioListener();
     camera.add(listener);
-    const sound = new THREE.Audio(listener);
-    const audioLoader = new THREE.AudioLoader();
+    const sound = new Audio(listener);
+    const audioLoader = new AudioLoader();
     return {
         sound,
         audioLoader,
