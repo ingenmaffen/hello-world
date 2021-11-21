@@ -17,7 +17,7 @@ const mockCloneFunction = jest.fn(() => {
     }
 });
 
-const mockObjects = [
+export const mockObjects = [
     {
         name: "mockDefaultBall",
         geometry: {

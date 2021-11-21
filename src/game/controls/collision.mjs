@@ -3,7 +3,7 @@ import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/twee
 import { playCollisionSound } from "../sounds/sfx.mjs";
 import { getPlayerSpeed, setPlayerSpeed } from "./player-controls.mjs";
 
-let colliders;
+let colliders = [];
 
 export function initiateColliders(objects) {
     colliders = [];
