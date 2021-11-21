@@ -14,5 +14,9 @@ module.exports = {
   ],
   extensionsToTreatAsEsm: [".jsx"],
   testEnvironment: "jsdom",
-  transform: {}
+  transform: {},
+  coveragePathIgnorePatterns: [
+    "node_modules",
+    "<rootDir>/src/assets/objects/loader/GLTFLoader.mjs",
+],
 };
