@@ -1,18 +1,19 @@
-import { 
-    SphereGeometry, 
-    TextureLoader, 
-    MeshStandardMaterial, 
+import {
+    SphereGeometry,
+    TextureLoader,
+    MeshStandardMaterial,
     Mesh,
     Vector3,
     CylinderGeometry,
-    Group, 
-    MeshBasicMaterial
+    Group,
+    MeshBasicMaterial,
 } from "../../../node_modules/three/build/three.module.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
 import { handleCollision } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
+let momentum = 0; // click speed
 let maxSpeed = 30;
 let isMouseHeldDown = false;
 let mouseHoldArrow;
@@ -63,22 +64,23 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
     }
 }
 
-export function buildUpMovementOnMouseDown() {
+export function buildUpMovementOnMouseDown(player, camera) {
     isMouseHeldDown = true;
-    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
-    updateMouseMoveArrow(playerSpeed);
+    momentum = momentum > maxSpeed ? momentum : momentum + 0.1;
+    updateMouseMoveArrow(momentum, player, camera);
     setTimeout(() => {
         if (isMouseHeldDown) {
-            buildUpMovementOnMouseDown();
+            buildUpMovementOnMouseDown(player, camera);
         }
     }, 0);
 }
 
-export function movePlayerOnMouseUp() {
+export function movePlayerOnMouseUp(player, camera) {
     isMouseHeldDown = false;
-    updateMouseMoveArrow(0);
-
-    // TODO: update player position on movement and decrease momentum (playerSpeed)
+    playerSpeed += momentum;
+    momentum = 0;
+    updateMouseMoveArrow(0, player, camera);
+    handlePlayerDriftMovement();
 }
 
 export function setPlayerSpeed(value) {
@@ -134,6 +136,16 @@ function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera
     handleCollision(player, audio);
 }
 
+function handlePlayerDriftMovement() {
+    // TODO: move player based on vector alignment
+    // TODO: during animaton:
+    // - decrease playerSpeed
+    // - handle collision -> define new movement vector
+    // - move objects on collison
+    // - handle object-object collision (during their animations)
+    // - handle collision with static objects (may be a bit different from object collision)
+}
+
 function isPlayerMoving(pressedKeys) {
     let playerMoving = false;
     for (let [_key, value] of Object.entries(keysEnum)) {
@@ -162,30 +174,38 @@ function getMovementVector(camera, player) {
 function initiatePlayerMouseMovementHelper(scene) {
     const arrowBody = new CylinderGeometry(0.2, 0.2, 1, 32);
     const arrowHead = new CylinderGeometry(0.01, 0.5, 1, 32);
-    const arrowMaterial = new MeshBasicMaterial({ color: 0xff0000, opacity: 0, transparent: true});
+    const arrowMaterial = new MeshBasicMaterial({ color: 0xff0000, opacity: 0, transparent: true });
 
     const bodyMesh = new Mesh(arrowBody, arrowMaterial);
     const headMesh = new Mesh(arrowHead, arrowMaterial);
     headMesh.position.y = 1;
 
     const arrow = new Group();
-    arrow.add( bodyMesh );
-    arrow.add( headMesh );
-    
-    arrow.rotation.z = - Math.PI / 2;
+    arrow.add(bodyMesh);
+    arrow.add(headMesh);
+
+    arrow.rotation.z = -Math.PI / 2;
 
     scene.add(arrow);
 
     return arrow;
 }
 
-function updateMouseMoveArrow(distance) {
-    // TODO: arrow rotation should use movementVector (both for yAxis disabled and enabled) 
+function updateMouseMoveArrow(distance, player, camera) {
     if (mouseHoldArrow) {
         const [bodyMesh, headMesh] = mouseHoldArrow.children;
         bodyMesh.scale.y = distance + 1;
         bodyMesh.position.y = (distance + 1) / 2;
         headMesh.position.y = distance + 1;
         bodyMesh.material.transparent = !isMouseHeldDown;
+
+        const vector = getMovementVector(camera, player);
+        const sign = vector.z / Math.abs(vector.z);
+        mouseHoldArrow.rotation.y = (-sign * Math.PI) / 2 + Math.atan(vector.x / vector.z);
+
+        if (!yAxisDisabledOnClick) {
+            // TODO: arrow rotation for vector's Y-axis
+            // mouseHoldArrow.rotation.z = - Math.PI / 4;
+        }
     }
 }

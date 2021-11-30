@@ -53,5 +53,5 @@ function animate(time) {
     handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
-initMap(boxSolarSystem);
+initMap(billiards);
 requestAnimationFrame(animate);

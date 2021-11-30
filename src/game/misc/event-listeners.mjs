@@ -101,12 +101,12 @@ function handleKeyUp(event) {
 
 function handleMouseDown(event) {
     if (!isGamePaused) {
-        buildUpMovementOnMouseDown();
+        buildUpMovementOnMouseDown(player, camera);
     }
 }
 
 function handleMouseUp(event) {
     if (!isGamePaused) {
-        movePlayerOnMouseUp();
+        movePlayerOnMouseUp(player, camera);
     }
 }
