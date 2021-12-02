@@ -7,14 +7,16 @@ let camera;
 let cameraPosition;
 let player;
 let pressedKeys;
+let sfxAudio;
 let isGamePaused = false;
 
-export function initiateEventListeners(_renderer, _camera, _cameraPosition, _player, _pressedKeys) {
+export function initiateEventListeners(_renderer, _camera, _cameraPosition, _player, _pressedKeys, _sfxAudio) {
     renderer = _renderer;
     camera = _camera;
     cameraPosition = _cameraPosition;
     player = _player;
     pressedKeys = _pressedKeys;
+    sfxAudio = _sfxAudio;
 
     // camera movement
     window.addEventListener("mousemove", handleMouseMove);
@@ -111,6 +113,6 @@ function handleMouseDown(event) {
 
 function handleMouseUp(event) {
     if (!isGamePaused) {
-        movePlayerOnMouseUp(player, camera, cameraPosition);
+        movePlayerOnMouseUp(player, camera, cameraPosition, sfxAudio);
     }
 }

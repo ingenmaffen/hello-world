@@ -42,6 +42,33 @@ export function handleCollision(player, audio) {
     });
 }
 
+export function handleDriftCollision(player, vector, audio) {
+    player.geometry.computeBoundingSphere();
+    player.updateMatrixWorld();
+    const playerCollider = player.geometry.boundingSphere.clone();
+    playerCollider.applyMatrix4(player.matrixWorld);
+    colliders.forEach((object) => {
+        if (isPlayerCollidingWithObject(playerCollider, object)) {
+            if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
+                playCollisionSound(audio);
+                console.log("collides with wall");
+            } else {
+                const collisionVector = getCollisionVector(player, object.mesh);
+                playCollisionSound(audio);
+                console.log("collides with object");
+                // animateMovement(object.mesh, vector, object.collider);
+                // updateCollider(object.mesh, object.collider);
+            }
+        }
+    });
+    // TODO: during animaton:
+    // - handle collision -> define new movement vector
+    // - move objects on collison
+    // - handle object-object collision (during their animations)
+    // - handle collision with static objects (may be a bit different from object collision)
+    return vector;
+}
+
 function getCollisionVector(player, object) {
     const vector = new Vector3(
         object.position.x - player.position.x,

@@ -12,6 +12,7 @@ export function initiateSound(camera) {
 }
 
 export function playCollisionSound(audio) {
+    // TODO: play multiple instance of collision sound effect
     audio.audioLoader.load("src/assets/sounds/clack.wav", function (buffer) {
         audio.sound.setBuffer(buffer);
         audio.sound.setLoop(false);

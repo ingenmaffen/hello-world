@@ -5,7 +5,6 @@ const debugCustomColliders = true;
 
 export function initiateScene(scene, map) {
     const sceneObjects = [];
-    const customColliders = [];
     const background = addBackground(scene, map);
 
     map.objects.forEach((object) => {
@@ -18,14 +17,13 @@ export function initiateScene(scene, map) {
 
     if (map.customObjects) {
         map.customObjects.forEach((object) => {
-            loadCustomObject(scene, customColliders, object)
+            loadCustomObject(scene, sceneObjects, object)
         });
     }
 
     return {
         background,
-        sceneObjects,
-        customColliders
+        sceneObjects
     };
 }
 

@@ -8,9 +8,9 @@ import {
     Group,
     MeshBasicMaterial,
 } from "../../../node_modules/three/build/three.module.mjs";
-import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
+import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
-import { handleCollision } from "./collision.mjs";
+import { handleCollision, handleDriftCollision } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -76,12 +76,12 @@ export function buildUpMovementOnMouseDown(player, camera) {
     }, 0);
 }
 
-export function movePlayerOnMouseUp(player, camera, cameraPosition) {
+export function movePlayerOnMouseUp(player, camera, cameraPosition, sfxAudio) {
     isMouseHeldDown = false;
     playerSpeed += momentum;
     momentum = 0;
     updateMouseMoveArrow(0, player, camera);
-    handlePlayerDriftMovement(camera, player, cameraPosition);
+    handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio);
 }
 
 export function setPlayerSpeed(value) {
@@ -137,43 +137,34 @@ function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera
     handleCollision(player, audio);
 }
 
-function handlePlayerDriftMovement(camera, player, cameraPosition) {
-    // TODO: move player based on vector alignment
-    // TODO: during animaton:
-    // - decrease playerSpeed
-    // - handle collision -> define new movement vector
-    // - move objects on collison
-    // - handle object-object collision (during their animations)
-    // - handle collision with static objects (may be a bit different from object collision)
-
+function handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio) {
     const vector = getMovementVector(camera, player);
     if (yAxisDisabledOnClick) {
         vector.y = 0;
     }
-    animatePlayerDrift(vector, player, camera, cameraPosition);
+    animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio);
 }
 
-function animatePlayerDrift(vector, player, camera, cameraPosition) {
-    const force = 0.05;
-    new Tween(vector)
-        .to({ ...vector }, 300)
-        .easing(Easing.Quadratic.InOut)
+function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
+    let movementVector = vector;
+    new Tween({x: 0, y: 0, z: 0})
+        .to({ ...vector }, 5)
         .onUpdate((coords) => {
             if (coords) {
-                player.position.x += coords.x * force;
-                player.position.y += coords.y * force;
-                player.position.z += coords.z * force;
-                player.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
-                player.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
+                const distancePerFrame = playerSpeed / 5;
+                player.position.x += coords.x * distancePerFrame;
+                player.position.y += coords.y * distancePerFrame;
+                player.position.z += coords.z * distancePerFrame;
+                player.rotation.x += Math.cos(coords.x);
+                player.rotation.z += Math.sin(coords.z);
             }
             decreasePlayerSpeed();
             handleCameraMovement(0, 0, cameraPosition, camera, player);
-            // updateCollider(object, collider);
+            movementVector = handleDriftCollision(player, vector, sfxAudio);
         })
         .onComplete(() => {
-            // updateCollider(object, collider);
             if (playerSpeed) {
-                animatePlayerDrift(vector, player, camera, cameraPosition);
+                animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
             }
         })
         .start();

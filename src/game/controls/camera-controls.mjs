@@ -23,6 +23,10 @@ export function changeCameraDistance(deltaY) {
     cameraDistance = cameraDistance < 0.2 ? 0.2 : cameraDistance;
 }
 
+export function setCameraDistance(value) {
+    cameraDistance = value;
+}
+
 export function getCameraDistance() {
     return cameraDistance;
 }

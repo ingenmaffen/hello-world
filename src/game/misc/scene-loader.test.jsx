@@ -16,6 +16,7 @@ const mockMap = {
     name: "testMap", // optional field, helper
     backgroundTexture: "",
     music: jest.fn(),
+    cameraDistance: 5,
 
     // fields needed for static orbital circles
     sunPosition: mockPosition,
