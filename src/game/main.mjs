@@ -10,7 +10,7 @@ import { bowling } from "./maps/bowling.mjs"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.mjs";
 import { initiateSound } from "./sounds/sfx.mjs";
 import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
-import { initiateEventListeners } from "./misc/event-listeners.mjs";
+import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
 
 let camera;
 let scene;
@@ -47,10 +47,12 @@ export function initMap(map) {
 }
 
 function animate(time) {
-    renderer.render(scene, camera);
+    if (!getIsGamePaused()) {
+        renderer.render(scene, camera);
+        update(time);
+        handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
+    }
     requestAnimationFrame(animate);
-    update(time);
-    handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
 }
 
 initMap(billiards);

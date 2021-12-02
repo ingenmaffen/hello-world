@@ -42,6 +42,10 @@ export function removeEventListeners() {
     window.removeEventListener("mouseup", handleMouseUp);
 }
 
+export function getIsGamePaused() {
+    return isGamePaused;
+}
+
 function unPauseGame() {
     isGamePaused = false;
     renderer.domElement.requestPointerLock();
@@ -107,6 +111,6 @@ function handleMouseDown(event) {
 
 function handleMouseUp(event) {
     if (!isGamePaused) {
-        movePlayerOnMouseUp(player, camera);
+        movePlayerOnMouseUp(player, camera, cameraPosition);
     }
 }

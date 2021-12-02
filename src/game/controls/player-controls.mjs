@@ -8,6 +8,7 @@ import {
     Group,
     MeshBasicMaterial,
 } from "../../../node_modules/three/build/three.module.mjs";
+import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
 import { handleCollision } from "./collision.mjs";
 
@@ -75,12 +76,12 @@ export function buildUpMovementOnMouseDown(player, camera) {
     }, 0);
 }
 
-export function movePlayerOnMouseUp(player, camera) {
+export function movePlayerOnMouseUp(player, camera, cameraPosition) {
     isMouseHeldDown = false;
     playerSpeed += momentum;
     momentum = 0;
     updateMouseMoveArrow(0, player, camera);
-    handlePlayerDriftMovement();
+    handlePlayerDriftMovement(camera, player, cameraPosition);
 }
 
 export function setPlayerSpeed(value) {
@@ -136,7 +137,7 @@ function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera
     handleCollision(player, audio);
 }
 
-function handlePlayerDriftMovement() {
+function handlePlayerDriftMovement(camera, player, cameraPosition) {
     // TODO: move player based on vector alignment
     // TODO: during animaton:
     // - decrease playerSpeed
@@ -144,6 +145,43 @@ function handlePlayerDriftMovement() {
     // - move objects on collison
     // - handle object-object collision (during their animations)
     // - handle collision with static objects (may be a bit different from object collision)
+
+    const vector = getMovementVector(camera, player);
+    if (yAxisDisabledOnClick) {
+        vector.y = 0;
+    }
+    animatePlayerDrift(vector, player, camera, cameraPosition);
+}
+
+function animatePlayerDrift(vector, player, camera, cameraPosition) {
+    const force = 0.05;
+    new Tween(vector)
+        .to({ ...vector }, 300)
+        .easing(Easing.Quadratic.InOut)
+        .onUpdate((coords) => {
+            if (coords) {
+                player.position.x += coords.x * force;
+                player.position.y += coords.y * force;
+                player.position.z += coords.z * force;
+                player.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
+                player.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
+            }
+            decreasePlayerSpeed();
+            handleCameraMovement(0, 0, cameraPosition, camera, player);
+            // updateCollider(object, collider);
+        })
+        .onComplete(() => {
+            // updateCollider(object, collider);
+            if (playerSpeed) {
+                animatePlayerDrift(vector, player, camera, cameraPosition);
+            }
+        })
+        .start();
+}
+
+function decreasePlayerSpeed() { 
+    playerSpeed -= 0.2;
+    playerSpeed = playerSpeed < 0 ? 0 : playerSpeed;
 }
 
 function isPlayerMoving(pressedKeys) {
@@ -193,6 +231,9 @@ function initiatePlayerMouseMovementHelper(scene) {
 
 function updateMouseMoveArrow(distance, player, camera) {
     if (mouseHoldArrow) {
+        mouseHoldArrow.position.x = player.position.x;
+        mouseHoldArrow.position.y = player.position.y;
+        mouseHoldArrow.position.z = player.position.z;
         const [bodyMesh, headMesh] = mouseHoldArrow.children;
         bodyMesh.scale.y = distance + 1;
         bodyMesh.position.y = (distance + 1) / 2;
@@ -204,8 +245,7 @@ function updateMouseMoveArrow(distance, player, camera) {
         mouseHoldArrow.rotation.y = (-sign * Math.PI) / 2 + Math.atan(vector.x / vector.z);
 
         if (!yAxisDisabledOnClick) {
-            // TODO: arrow rotation for vector's Y-axis
-            // mouseHoldArrow.rotation.z = - Math.PI / 4;
+            mouseHoldArrow.rotation.z = -Math.PI / 3 + Math.asin(vector.y / getCameraDistance());
         }
     }
 }
