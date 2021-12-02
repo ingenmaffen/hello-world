@@ -33,7 +33,7 @@ export function handleCollision(player, audio) {
                 playCollisionSound(audio);
                 setPlayerSpeed(-1);
             } else {
-                const vector = getCollisionVector(player, object.mesh);
+                const vector = getCollisionVectorWithAdaptivePlayerSpeed(player, object.mesh);
                 playCollisionSound(audio);
                 animateMovement(object.mesh, vector, object.collider);
                 updateCollider(object.mesh, object.collider);
@@ -51,25 +51,31 @@ export function handleDriftCollision(player, vector, audio) {
         if (isPlayerCollidingWithObject(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
-                console.log("collides with wall");
+                // TODO: handle collision with table
             } else {
                 const collisionVector = getCollisionVector(player, object.mesh);
                 playCollisionSound(audio);
-                console.log("collides with object");
-                // animateMovement(object.mesh, vector, object.collider);
-                // updateCollider(object.mesh, object.collider);
+                animateObjectDrift(object.mesh, collisionVector, object.collider, getPlayerSpeed());
+                // TODO: modify player vector based on collisionVector
             }
         }
     });
-    // TODO: during animaton:
-    // - handle collision -> define new movement vector
-    // - move objects on collison
-    // - handle object-object collision (during their animations)
-    // - handle collision with static objects (may be a bit different from object collision)
     return vector;
 }
 
+function handleObjectDriftCollision() {
+    // TODO: handle object-object collision
+}
+
 function getCollisionVector(player, object) {
+    return new Vector3(
+        object.position.x - player.position.x,
+        object.position.y - player.position.y,
+        object.position.z - player.position.z
+    );
+}
+
+function getCollisionVectorWithAdaptivePlayerSpeed(player, object) {
     const vector = new Vector3(
         object.position.x - player.position.x,
         object.position.y - player.position.y,
@@ -80,7 +86,33 @@ function getCollisionVector(player, object) {
     const vectorScale = (getPlayerSpeed()) * playerSize / objectSize;
     const updatedPlayerSpeed = playerSize < objectSize ? -1 * objectSize / playerSize : getPlayerSpeed() * objectSize / playerSize;
     setPlayerSpeed(updatedPlayerSpeed || -1);
-    return vector.addScalar(vectorScale);
+    return multiplyVector(vector, vectorScale);
+}
+
+function animateObjectDrift(object, vector, collider, force) {
+    new Tween({ x: 0, y: 0, z: 0 })
+        .to({ ...vector }, 5)
+        .easing(Easing.Quadratic.InOut)
+        .onUpdate((coords) => {
+            if (coords) {
+                object.position.x += coords.x * force;
+                object.position.y += coords.y * force;
+                object.position.z += coords.z * force;
+                object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
+                object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
+                force -= 0.2;
+                force = force < 0 ? 0 : force;
+            }
+            updateCollider(object, collider);
+            handleObjectDriftCollision();
+        })
+        .onComplete(() => {
+            if (force) {
+                animateObjectDrift(object, vector, collider, force);
+            }
+            updateCollider(object, collider);
+        })
+        .start();
 }
 
 function animateMovement(object, vector, collider) {
@@ -164,3 +196,11 @@ function createBoxCollider(mesh, colliders) {
         collider,
     });
 }
+
+function multiplyVector(vector, value) {
+    vector.x *= value;
+    vector.y *= value;
+    vector.z *= value;
+    return vector;
+}
+ 
