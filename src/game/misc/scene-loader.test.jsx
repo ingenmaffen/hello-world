@@ -41,7 +41,7 @@ const mockMap = {
         normalMovementDisabled: false,
         yAxisDisabledOnClick: false,
         moveOnClick: false,
-        retainMomentum: false
+        // retainMomentum: false // currently unused
     }, 
 
     // basic objects (shapes)

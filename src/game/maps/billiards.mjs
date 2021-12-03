@@ -38,9 +38,7 @@ export const billiards = {
         normalMovementDisabled: true,
         yAxisDisabledOnClick: true,
         moveOnClick: true,
-        retainMomentum: true
     },
-    // fog: true,
     objects: [
         {
             name: "light",

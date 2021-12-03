@@ -20,14 +20,32 @@ export const bowling = {
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playBilliardMissionMusic,
     playerConfig: {
-        color: 0x000000,
+        color: 0xffffff,
         texture: 'none',
-        // normalMovementDisabled: true,
-        // yAxisDisabledOnClick: true,
-        // moveOnClick: true,
-        // retainMomentum: true
+        normalMovementDisabled: true,
+        yAxisDisabledOnClick: true,
+        moveOnClick: true,
     },
     objects: [
+        {
+            name: "light",
+            texture: `${texturePathBase}/2k_sun.jpg`,
+            position: {
+                x: -150,
+                y: 125,
+                z: 450
+            },
+            otherAttributes: {
+                unmovable: true,
+                hasLight: true,
+                lightColor: 0xf55607,
+                lightIntensity: 3
+            },
+            constructorParams: `${109}, 32, 32`,
+            geometry: "SphereGeometry",
+            material: "MeshBasicMaterial",
+            materialOptions: null,
+        },
         {
             name: "floor",
             texture: `${texturePathBase}/wooden_floor.png`,
