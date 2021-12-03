@@ -22,7 +22,6 @@ let mouseHoldArrow;
 // map specific modifiers
 let yAxisDisabledOnClick = false;
 let normalMovementDisabled = false;
-let retainMomentum = false;
 
 // unlockables
 let moveOnClick = false;
@@ -48,7 +47,6 @@ export function initiatePlayer(playerConfig, scene) {
     normalMovementDisabled = playerConfig?.normalMovementDisabled;
     yAxisDisabledOnClick = playerConfig?.yAxisDisabledOnClick;
     moveOnClick = playerConfig?.moveOnClick;
-    retainMomentum = playerConfig?.retainMomentum;
 
     scene.add(player);
 
@@ -67,21 +65,25 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
 
 export function buildUpMovementOnMouseDown(player, camera) {
     isMouseHeldDown = true;
-    momentum = momentum > maxSpeed ? momentum : momentum + 0.1;
-    updateMouseMoveArrow(momentum, player, camera);
-    setTimeout(() => {
-        if (isMouseHeldDown) {
-            buildUpMovementOnMouseDown(player, camera);
-        }
-    }, 0);
+    if (moveOnClick) {
+        momentum = momentum > maxSpeed ? momentum : momentum + 0.1;
+        updateMouseMoveArrow(momentum, player, camera);
+        setTimeout(() => {
+            if (isMouseHeldDown) {
+                buildUpMovementOnMouseDown(player, camera);
+            }
+        }, 0);
+    }
 }
 
 export function movePlayerOnMouseUp(player, camera, cameraPosition, sfxAudio) {
     isMouseHeldDown = false;
-    playerSpeed += momentum;
-    momentum = 0;
-    updateMouseMoveArrow(0, player, camera);
-    handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio);
+    if (moveOnClick) {
+        playerSpeed += momentum;
+        momentum = 0;
+        updateMouseMoveArrow(0, player, camera);
+        handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio);
+    }
 }
 
 export function setPlayerSpeed(value) {
