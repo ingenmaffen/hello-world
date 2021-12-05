@@ -1,7 +1,7 @@
 import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
-import { getPlayerSpeed, setPlayerSpeed } from "./player-controls.mjs";
+import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.mjs";
 
 let colliders = [];
 
@@ -22,13 +22,26 @@ export function initiateColliders(objects) {
     });
 }
 
+export function multiplyVector(vector, value) {
+    return new Vector3(
+        vector.x * value,
+        vector.y * value,
+        vector.z * value
+    );
+}
+
+export function decreaseForceValue(value) {
+    value -= 0.5;
+    return value < 0 ? 0 : value;
+}
+
 export function handleCollision(player, audio) {
     player.geometry.computeBoundingSphere();
     player.updateMatrixWorld();
     const playerCollider = player.geometry.boundingSphere.clone();
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
-        if (isPlayerCollidingWithObject(playerCollider, object)) {
+        if (isObjectColliding(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 setPlayerSpeed(-1);
@@ -49,22 +62,25 @@ export function handleDriftCollision(player, vector, audio) {
     playerCollider.applyMatrix4(player.matrixWorld);
     let updatedVector;
     colliders.forEach((object) => {
-        if (isPlayerCollidingWithObject(playerCollider, object)) {
+        if (isObjectColliding(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
-                updatedVector = getCollisionVectorForTable(vector);
+                updatedVector = getUpdatedCollisionVectorForTable(vector);
             } else {
                 const collisionVector = getCollisionVector(player, object.mesh);
                 playCollisionSound(audio);
-                animateObjectDrift(object.mesh, collisionVector, object.collider, getPlayerSpeed());
-                // TODO: modify player vector based on collisionVector
+                animateObjectDrift(object.mesh, collisionVector, object.collider, getPlayerSpeed(), audio);
+                updatedVector = getUpdatedVectorForObjectCollision(vector, collisionVector);
             }
         }
     });
     return updatedVector || vector;
 }
 
-function getCollisionVectorForTable(vector) {
+function getUpdatedVectorForObjectCollision(vector, collisionVector) {
+}
+
+function getUpdatedCollisionVectorForTable(vector) {
     // TODO: make calculations better
     // TODO: extend to work with y axis as well
     const angle = Math.atan(vector.x / vector.z);
@@ -76,8 +92,22 @@ function getCollisionVectorForTable(vector) {
     )
 }
 
-function handleObjectDriftCollision() {
-    // TODO: handle object-object collision
+function handleObjectDriftCollision(driftingObject, objectCollider, vector, audio) {
+    let updatedVector;
+    colliders.forEach(object => {
+        if (driftingObject !== object.mesh && isObjectColliding(objectCollider, object)) {
+            if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
+                playCollisionSound(audio);
+                updatedVector = getUpdatedCollisionVectorForTable(vector);
+            } else {
+                const collisionVector = getCollisionVector(driftingObject, object.mesh);
+                playCollisionSound(audio);
+                animateObjectDrift(object.mesh, collisionVector, object.collider, getPlayerSpeed(), audio);
+                updatedVector = getUpdatedVectorForObjectCollision(vector, collisionVector);
+            }
+        }
+    });
+    return updatedVector || vector;
 }
 
 function getCollisionVector(player, object) {
@@ -102,26 +132,27 @@ function getCollisionVectorWithAdaptivePlayerSpeed(player, object) {
     return multiplyVector(vector, vectorScale);
 }
 
-function animateObjectDrift(object, vector, collider, force) {
+function animateObjectDrift(object, vector, collider, force, sfxAudio) {
+    let movementVector = vector;
     new Tween({ x: 0, y: 0, z: 0 })
-        .to({ ...vector }, 5)
-        .easing(Easing.Quadratic.InOut)
+        .to({ ...multiplyVector(vector, force / getMaxSpeed()) }, 5)
         .onUpdate((coords) => {
             if (coords) {
-                object.position.x += coords.x * force;
-                object.position.y += coords.y * force;
-                object.position.z += coords.z * force;
-                object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
-                object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
-                force -= 0.2;
-                force = force < 0 ? 0 : force;
+                const distancePerFrame = force / 5;
+                object.position.x += coords.x * distancePerFrame;
+                object.position.y += coords.y * distancePerFrame;
+                object.position.z += coords.z * distancePerFrame;
+                object.rotation.x += Math.cos(coords.x);
+                object.rotation.z += Math.sin(coords.z);
             }
             updateCollider(object, collider);
-            handleObjectDriftCollision();
         })
         .onComplete(() => {
+            // TODO: if object's distance is greater than the table's, move it closer to the center
+            force = decreaseForceValue(force);
             if (force) {
-                animateObjectDrift(object, vector, collider, force);
+                movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
+                animateObjectDrift(object, movementVector, collider, force, sfxAudio);
             }
             updateCollider(object, collider);
         })
@@ -156,10 +187,10 @@ function updateCollider(mesh, collider) {
     collider.center.z = mesh.position.z;
 }
 
-function isPlayerCollidingWithObject(playerCollider, object) {
-    return isObjectBox(object.mesh)
-        ? playerCollider.intersectsBox(object.collider)
-        : playerCollider.intersectsSphere(object.collider)
+function isObjectColliding(object, collider) {
+    return isObjectBox(collider.mesh)
+        ? object.intersectsBox(collider.collider)
+        : object.intersectsSphere(collider.collider)
 }
 
 function isObjectBox(mesh) {
@@ -208,13 +239,5 @@ function createBoxCollider(mesh, colliders) {
         mesh,
         collider,
     });
-}
-
-export function multiplyVector(vector, value) {
-    return new Vector3(
-        vector.x * value,
-        vector.y * value,
-        vector.z * value
-    );
 }
  
