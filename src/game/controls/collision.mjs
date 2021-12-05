@@ -47,11 +47,12 @@ export function handleDriftCollision(player, vector, audio) {
     player.updateMatrixWorld();
     const playerCollider = player.geometry.boundingSphere.clone();
     playerCollider.applyMatrix4(player.matrixWorld);
+    let updatedVector;
     colliders.forEach((object) => {
         if (isPlayerCollidingWithObject(playerCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
-                // TODO: handle collision with table
+                updatedVector = getCollisionVectorForTable(vector);
             } else {
                 const collisionVector = getCollisionVector(player, object.mesh);
                 playCollisionSound(audio);
@@ -60,7 +61,19 @@ export function handleDriftCollision(player, vector, audio) {
             }
         }
     });
-    return vector;
+    return updatedVector || vector;
+}
+
+function getCollisionVectorForTable(vector) {
+    // TODO: make calculations better
+    // TODO: extend to work with y axis as well
+    const angle = Math.atan(vector.x / vector.z);
+    const hypotenuse = vector.x / Math.sin(angle);
+    return new Vector3(
+        hypotenuse * Math.cos(Math.PI - angle),
+        0,
+        hypotenuse * Math.sin(Math.PI - angle),
+    )
 }
 
 function handleObjectDriftCollision() {
@@ -197,10 +210,11 @@ function createBoxCollider(mesh, colliders) {
     });
 }
 
-function multiplyVector(vector, value) {
-    vector.x *= value;
-    vector.y *= value;
-    vector.z *= value;
-    return vector;
+export function multiplyVector(vector, value) {
+    return new Vector3(
+        vector.x * value,
+        vector.y * value,
+        vector.z * value
+    );
 }
  

@@ -10,7 +10,7 @@ import {
 } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
-import { handleCollision, handleDriftCollision } from "./collision.mjs";
+import { handleCollision, handleDriftCollision, multiplyVector } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -166,6 +166,32 @@ function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
         })
         .onComplete(() => {
             if (playerSpeed) {
+                animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
+            }
+        })
+        .start();
+}
+
+// this is an alternative method for animating player drift movement
+// currently both methods have clipping and collision issues
+// so I'm just gonna leave both here and hope I'm gonna have some idea how to make a working one
+function animatePlayerDriftAlternative(vector, player, camera, cameraPosition, sfxAudio) {
+    new Tween({x: 0, y: 0, z: 0}).to({ ...multiplyVector(vector, playerSpeed / 30) }, 5)
+        .onUpdate((coords) => {
+            if (coords) {
+                const distancePerFrame = playerSpeed / 5;
+                player.position.x += coords.x * distancePerFrame;
+                player.position.y += coords.y * distancePerFrame;
+                player.position.z += coords.z * distancePerFrame;
+                player.rotation.x += Math.cos(coords.x);
+                player.rotation.z += Math.sin(coords.z);
+            }
+            handleCameraMovement(0, 0, cameraPosition, camera, player);
+            decreasePlayerSpeed();
+        })
+        .onComplete(() => {
+            if (playerSpeed) {
+                const movementVector = handleDriftCollision(player, vector, sfxAudio);
                 animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
             }
         })
