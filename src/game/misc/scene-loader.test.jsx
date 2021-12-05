@@ -27,6 +27,17 @@ const mockMap = {
         }
     },
 
+    /* if the map is set to be played inside a box, it can be used
+     * it was used to fix clipping issues on billiards map
+     * not mandatory field and any property can be left out
+     * (in that case that axis is unlimitedly accessible)
+     */
+    maxDistance: {
+        x: 100,
+        y: 100,
+        z: 100
+    },
+
     // map specific options for the player
     playerConfig: {
         // texture and coloring options
