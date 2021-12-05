@@ -169,7 +169,6 @@ function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
             movementVector = handleDriftCollision(player, vector, sfxAudio);
         })
         .onComplete(() => {
-            // TODO: if player's distance is greater than the table's, move it to the center
             if (playerSpeed) {
                 animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
             }

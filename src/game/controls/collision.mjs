@@ -4,6 +4,7 @@ import { playCollisionSound } from "../sounds/sfx.mjs";
 import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.mjs";
 
 let colliders = [];
+let mapMaxColliders;
 
 export function initiateColliders(objects) {
     colliders = [];
@@ -20,6 +21,10 @@ export function initiateColliders(objects) {
                 break;
         }
     });
+}
+
+export function setMapMaxColliders(value) {
+    mapMaxColliders = value;
 }
 
 export function multiplyVector(vector, value) {
@@ -148,10 +153,10 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
             updateCollider(object, collider);
         })
         .onComplete(() => {
-            // TODO: if object's distance is greater than the table's, move it closer to the center
             force = decreaseForceValue(force);
             if (force) {
                 movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
+                handleMapMaxCollider(object, collider);
                 animateObjectDrift(object, movementVector, collider, force, sfxAudio);
             }
             updateCollider(object, collider);
@@ -239,5 +244,19 @@ function createBoxCollider(mesh, colliders) {
         mesh,
         collider,
     });
+}
+
+function handleMapMaxCollider(object, collider) {
+    const axes = ['x', 'y', 'z'];
+    if (mapMaxColliders) {
+        axes.forEach(axis => {
+            if (mapMaxColliders[axis] && 
+                Math.abs(object.position[axis]) > mapMaxColliders[axis]) {
+                    const sign = object.position[axis] / Math.abs(object.position[axis]);
+                    object.position[axis] = sign * (mapMaxColliders[axis] - 3); 
+            }
+        });
+    }
+    updateCollider(object, collider);
 }
  
