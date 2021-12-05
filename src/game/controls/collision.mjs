@@ -102,6 +102,7 @@ function resetPlayer(player) {
 
 
 function getUpdatedVectorForObjectCollision(vector, collisionVector) {
+    // TODO: implement updated collision vector stuff
 }
 
 function getUpdatedCollisionVectorForTable(vector) {
@@ -121,6 +122,7 @@ function handleObjectDriftCollision(driftingObject, objectCollider, vector, audi
     colliders.forEach(object => {
         if (driftingObject !== object.mesh && isObjectColliding(objectCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.destroysObjects) {
+                // TODO: fix (object currently fly out of the table on destroy)
                 driftingObject.otherAttributes.destroyed = true;
                 checkMissionObjective();
                 updatedVector = multiplyVector(vector, 0);
@@ -206,7 +208,6 @@ function animateMovement(object, vector, collider) {
                 object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
             }
             updateCollider(object, collider);
-            // TODO: add object-object collision
         })
         .onComplete(() => {
             updateCollider(object, collider);
@@ -243,6 +244,9 @@ function setMissionObjects(objects) {
 function checkMissionObjective() {
     const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
     if (missionObjects.length === objectsDone.length) {
+        // TODO: mission end screen -> back to the menu or restart
+        // TODO: add sound effect
+        // TODO: maybe some confetti effect
         console.log("Mission Complete!");
     }
 }
