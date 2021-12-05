@@ -69,6 +69,9 @@ export const billiards = {
             material: "MeshBasicMaterial",
             position: {
                 ...firstBallPosition
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -81,6 +84,9 @@ export const billiards = {
                 x: firstBallPosition.x + 3.5,
                 y: 0,
                 z: firstBallPosition.z + 2
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -93,6 +99,9 @@ export const billiards = {
                 x: firstBallPosition.x + 3.5,
                 y: 0,
                 z: firstBallPosition.z - 2
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -105,6 +114,9 @@ export const billiards = {
                 x: firstBallPosition.x + 7,
                 y: 0,
                 z: firstBallPosition.z 
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -117,6 +129,9 @@ export const billiards = {
                 x: firstBallPosition.x + 7,
                 y: 0,
                 z: firstBallPosition.z - 4
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -129,6 +144,9 @@ export const billiards = {
                 x: firstBallPosition.x + 7,
                 y: 0,
                 z: firstBallPosition.z + 4
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -141,6 +159,9 @@ export const billiards = {
                 x: firstBallPosition.x + 10.5,
                 y: 0,
                 z: firstBallPosition.z + 2
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -153,8 +174,11 @@ export const billiards = {
                 x: firstBallPosition.x + 10.5,
                 y: 0,
                 z: firstBallPosition.z - 2
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
-        },,
+        },
         {
             name: 'ball9',
             texture: `${texturePathBase}/2k_uranus.jpg`,
@@ -165,6 +189,9 @@ export const billiards = {
                 x: firstBallPosition.x + 10.5,
                 y: 0,
                 z: firstBallPosition.z + 6
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
         {
@@ -177,6 +204,9 @@ export const billiards = {
                 x: firstBallPosition.x + 10.5,
                 y: 0,
                 z: firstBallPosition.z - 6
+            },
+            otherAttributes: {
+                checkIfDestroyed: true
             }
         },
     ],

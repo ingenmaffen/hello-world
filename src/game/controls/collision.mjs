@@ -5,6 +5,7 @@ import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.m
 
 let colliders = [];
 let mapMaxColliders;
+let missionObjects = [];
 
 export function initiateColliders(objects) {
     colliders = [];
@@ -21,6 +22,7 @@ export function initiateColliders(objects) {
                 break;
         }
     });
+    setMissionObjects(objects);
 }
 
 export function setMapMaxColliders(value) {
@@ -87,6 +89,7 @@ export function handleDriftCollision(player, vector, audio) {
 }
 
 export function isNullVector(vector) {
+    // TODO: currently it is unusable, because the checks happen at the wrong time during the animation
     return !(vector.x || vector.y || vector.z);
 }
 
@@ -94,6 +97,7 @@ function resetPlayer(player) {
     player.position.x = 0;
     player.position.y = 0;
     player.position.z = 0;
+    setPlayerSpeed(0);
 }
 
 
@@ -117,6 +121,8 @@ function handleObjectDriftCollision(driftingObject, objectCollider, vector, audi
     colliders.forEach(object => {
         if (driftingObject !== object.mesh && isObjectColliding(objectCollider, object)) {
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.destroysObjects) {
+                driftingObject.otherAttributes.destroyed = true;
+                checkMissionObjective();
                 updatedVector = multiplyVector(vector, 0);
                 animateDestroyObject(driftingObject, objectCollider, object.mesh);
             }
@@ -224,6 +230,21 @@ function animateDestroyObject(object, collider, destinationObject) {
         })
         .start();
 
+}
+
+function setMissionObjects(objects) {
+    objects
+        .filter(object => object?.otherAttributes?.checkIfDestroyed)
+        .forEach(object => {
+            missionObjects.push(object);
+    });
+}
+
+function checkMissionObjective() {
+    const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
+    if (missionObjects.length === objectsDone.length) {
+        console.log("Mission Complete!");
+    }
 }
 
 function updateCollider(mesh, collider) {
