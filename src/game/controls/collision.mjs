@@ -68,6 +68,10 @@ export function handleDriftCollision(player, vector, audio) {
     let updatedVector;
     colliders.forEach((object) => {
         if (isObjectColliding(playerCollider, object)) {
+            if (object.mesh.otherAttributes && object.mesh.otherAttributes.destroysObjects) {
+                resetPlayer(player);
+                updatedVector = multiplyVector(vector, 0);
+            }
             if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 updatedVector = getUpdatedCollisionVectorForTable(vector);
@@ -81,6 +85,17 @@ export function handleDriftCollision(player, vector, audio) {
     });
     return updatedVector || vector;
 }
+
+export function isNullVector(vector) {
+    return !(vector.x || vector.y || vector.z);
+}
+
+function resetPlayer(player) {
+    player.position.x = 0;
+    player.position.y = 0;
+    player.position.z = 0;
+}
+
 
 function getUpdatedVectorForObjectCollision(vector, collisionVector) {
 }
@@ -101,7 +116,11 @@ function handleObjectDriftCollision(driftingObject, objectCollider, vector, audi
     let updatedVector;
     colliders.forEach(object => {
         if (driftingObject !== object.mesh && isObjectColliding(objectCollider, object)) {
-            if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
+            if (object.mesh.otherAttributes && object.mesh.otherAttributes.destroysObjects) {
+                updatedVector = multiplyVector(vector, 0);
+                animateDestroyObject(driftingObject, objectCollider, object.mesh);
+            }
+            else if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 updatedVector = getUpdatedCollisionVectorForTable(vector);
             } else {
@@ -157,7 +176,9 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
             if (force) {
                 movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
                 handleMapMaxCollider(object, collider);
-                animateObjectDrift(object, movementVector, collider, force, sfxAudio);
+                if (!isNullVector(movementVector)) {
+                    animateObjectDrift(object, movementVector, collider, force, sfxAudio);
+                }
             }
             updateCollider(object, collider);
         })
@@ -179,11 +200,30 @@ function animateMovement(object, vector, collider) {
                 object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
             }
             updateCollider(object, collider);
+            // TODO: add object-object collision
         })
         .onComplete(() => {
             updateCollider(object, collider);
         })
         .start();
+}
+
+function animateDestroyObject(object, collider, destinationObject) {
+    new Tween({...object.position})
+        .to({ ...destinationObject.position }, 50)
+        .easing(Easing.Quadratic.InOut)
+        .onUpdate((coords) => {
+            if (coords) {
+                object.position.x += coords.x;
+                object.position.y += coords.y;
+                object.position.z += coords.z;
+            }
+        })
+        .onComplete(() => {
+            updateCollider(object, collider);
+        })
+        .start();
+
 }
 
 function updateCollider(mesh, collider) {

@@ -10,7 +10,7 @@ import {
 } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
-import { handleCollision, handleDriftCollision, multiplyVector } from "./collision.mjs";
+import { handleCollision, handleDriftCollision, multiplyVector, isNullVector } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -164,12 +164,12 @@ function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
                 player.rotation.x += Math.cos(coords.x);
                 player.rotation.z += Math.sin(coords.z);
             }
-            decreasePlayerSpeed();
-            handleCameraMovement(0, 0, cameraPosition, camera, player);
             movementVector = handleDriftCollision(player, vector, sfxAudio);
+            handleCameraMovement(0, 0, cameraPosition, camera, player);
         })
         .onComplete(() => {
-            if (playerSpeed) {
+            decreasePlayerSpeed();
+            if (playerSpeed && !isNullVector(movementVector)) {
                 animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
             }
         })

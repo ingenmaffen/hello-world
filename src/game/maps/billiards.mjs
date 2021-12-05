@@ -9,7 +9,7 @@ export const sunPosition = {
 const texturePathBase = "src/assets/textures";
 const objectsPathBase = "src/assets/objects";
 
-const tableScale = 5;
+const tableScale = 5.5;
 const yOffset = 0.3 * tableScale;
 const tablePosition = {
     x: 0,
@@ -444,6 +444,114 @@ export const billiards = {
                         x: tablePosition.x - (13.3 * tableScale),
                         y: tablePosition.y + yOffset,
                         z: tablePosition.z - (6.7 * tableScale)
+                    }
+                },
+                {
+                    name: 'hole1',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x - (12 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z - (6 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'hole2',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x - (12 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z + (6 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'hole3',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x + (12 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z - (6 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'hole4',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x + (12 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z + (6 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'hole5',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x,
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z - (6.75 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'hole6',
+                    constructorParams: `${6.5}, ${10}, ${6.5}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x,
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z + (6.75 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
                     }
                 },
             ]

@@ -132,7 +132,10 @@ function loadCustomObject(scene, customColliders, object) {
             colliderObject.materialOptions.opacity = 1;
             colliderObject.materialOptions.wireframe = true;
         }
-        colliderObject.otherAttributes = object.otherAttributes;
+        colliderObject.otherAttributes = {
+            ...object.otherAttributes,
+            ...colliderObject.otherAttributes
+        };
         addObjectToScene(scene, customColliders, colliderObject);
     });
 }
