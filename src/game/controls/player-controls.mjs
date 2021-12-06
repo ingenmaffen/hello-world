@@ -18,6 +18,7 @@ let momentum = 0; // click speed
 let maxSpeed = 30;
 let isMouseHeldDown = false;
 let mouseHoldArrow;
+let backgroundMesh;
 
 // map specific modifiers
 let yAxisDisabledOnClick = false;
@@ -58,10 +59,16 @@ export function initiatePlayer(playerConfig, scene) {
     return player;
 }
 
+export function setBackgroundMeshForPlayerMovement(background) {
+    backgroundMesh = background;
+}
+
 export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
-    // TODO: move background with player
     if (!normalMovementDisabled) {
         handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
+    }
+    if (backgroundMesh) {
+        updateBackgroundPosition(player);
     }
 }
 
@@ -247,4 +254,10 @@ function updateMouseMoveArrow(distance, player, camera) {
             mouseHoldArrow.rotation.z = -Math.PI / 3 + Math.asin(vector.y / getCameraDistance());
         }
     }
+}
+
+function updateBackgroundPosition(player) {
+    backgroundMesh.position.x = player.position.x;
+    backgroundMesh.position.y = player.position.y;
+    backgroundMesh.position.z = player.position.z;
 }
