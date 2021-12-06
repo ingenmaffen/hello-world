@@ -134,7 +134,9 @@ function loadCustomObject(scene, customColliders, object) {
         }
         colliderObject.otherAttributes = {
             ...object.otherAttributes,
-            ...colliderObject.otherAttributes
+            ...colliderObject.otherAttributes,
+            // TODO: fix async issue
+            // parentObject: !object?.otherAttributes?.unmovable ? object : null 
         };
         addObjectToScene(scene, customColliders, colliderObject);
     });

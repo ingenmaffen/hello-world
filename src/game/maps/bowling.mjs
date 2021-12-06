@@ -25,6 +25,7 @@ export const bowling = {
         normalMovementDisabled: true,
         yAxisDisabledOnClick: true,
         moveOnClick: true,
+        clickMoveForce: 0.5
     },
     objects: [
         {

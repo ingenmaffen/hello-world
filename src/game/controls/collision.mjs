@@ -165,6 +165,9 @@ function getCollisionVectorWithAdaptivePlayerSpeed(player, object) {
 }
 
 function animateObjectDrift(object, vector, collider, force, sfxAudio) {
+    if (object?.otherAttributes?.parentObject) {
+        animateObjectDrift(object.otherAttributes.parentObject, vector, null, force, sfxAudio);
+    }
     let movementVector = vector;
     new Tween({ x: 0, y: 0, z: 0 })
         .to({ ...multiplyVector(vector, force / getMaxSpeed()) }, 5)
@@ -177,18 +180,22 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
                 object.rotation.x += Math.cos(coords.x);
                 object.rotation.z += Math.sin(coords.z);
             }
-            updateCollider(object, collider);
+            if (collider) {
+                updateCollider(object, collider);
+            }
         })
         .onComplete(() => {
             force = decreaseForceValue(force);
-            if (force) {
+            if (force && collider) {
                 movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
                 handleMapMaxCollider(object, collider);
                 if (!isNullVector(movementVector)) {
                     animateObjectDrift(object, movementVector, collider, force, sfxAudio);
                 }
             }
-            updateCollider(object, collider);
+            if (collider) {
+                updateCollider(object, collider);
+            }
         })
         .start();
 }

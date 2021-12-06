@@ -22,6 +22,7 @@ let mouseHoldArrow;
 // map specific modifiers
 let yAxisDisabledOnClick = false;
 let normalMovementDisabled = false;
+let clickMoveForce = 1;
 
 // unlockables
 let moveOnClick = false;
@@ -47,6 +48,7 @@ export function initiatePlayer(playerConfig, scene) {
     normalMovementDisabled = playerConfig?.normalMovementDisabled;
     yAxisDisabledOnClick = playerConfig?.yAxisDisabledOnClick;
     moveOnClick = playerConfig?.moveOnClick;
+    clickMoveForce = playerConfig?.clickMoveForce || clickMoveForce;
 
     scene.add(player);
 
@@ -79,7 +81,7 @@ export function buildUpMovementOnMouseDown(player, camera) {
 export function movePlayerOnMouseUp(player, camera, cameraPosition, sfxAudio) {
     isMouseHeldDown = false;
     if (moveOnClick) {
-        playerSpeed += momentum;
+        playerSpeed += momentum * clickMoveForce;
         momentum = 0;
         updateMouseMoveArrow(0, player, camera);
         handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio);
