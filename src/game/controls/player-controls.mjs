@@ -10,7 +10,7 @@ import {
 } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
-import { handleCollision, handleDriftCollision, multiplyVector, isNullVector } from "./collision.mjs";
+import { handleCollision, handleDriftCollision, multiplyVector, isNullVector, handleMissionModeEvents } from "./collision.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -19,11 +19,14 @@ let maxSpeed = 30;
 let isMouseHeldDown = false;
 let mouseHoldArrow;
 let backgroundMesh;
+let isAnimationRunning = false;
+let clickMoveCount = 0;
 
 // map specific modifiers
 let yAxisDisabledOnClick = false;
 let normalMovementDisabled = false;
 let clickMoveForce = 1;
+let canNormalMoveOnXAxis = false;
 
 // unlockables
 let moveOnClick = false;
@@ -38,6 +41,7 @@ const keysEnum = {
 };
 
 export function initiatePlayer(playerConfig, scene) {
+    clickMoveCount = 0;
     const texturePathBase = "src/assets/textures";
     const geometry = new SphereGeometry(2, 32, 16);
     const texture =
@@ -50,6 +54,7 @@ export function initiatePlayer(playerConfig, scene) {
     yAxisDisabledOnClick = playerConfig?.yAxisDisabledOnClick;
     moveOnClick = playerConfig?.moveOnClick;
     clickMoveForce = playerConfig?.clickMoveForce || clickMoveForce;
+    canNormalMoveOnXAxis = playerConfig?.canNormalMoveOnXAxis;
 
     scene.add(player);
 
@@ -67,6 +72,9 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
     if (!normalMovementDisabled) {
         handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
     }
+    if (canNormalMoveOnXAxis) {
+        handleOnlyXMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
+    }
     if (backgroundMesh) {
         updateBackgroundPosition(player);
     }
@@ -74,7 +82,7 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
 
 export function buildUpMovementOnMouseDown(player, camera) {
     isMouseHeldDown = true;
-    if (moveOnClick) {
+    if (moveOnClick && !isAnimationRunning) {
         momentum = momentum > maxSpeed ? momentum : momentum + 0.1;
         updateMouseMoveArrow(momentum, player, camera);
         setTimeout(() => {
@@ -87,7 +95,8 @@ export function buildUpMovementOnMouseDown(player, camera) {
 
 export function movePlayerOnMouseUp(player, camera, cameraPosition, sfxAudio) {
     isMouseHeldDown = false;
-    if (moveOnClick) {
+    if (moveOnClick && !isAnimationRunning) {
+        clickMoveCount++;
         playerSpeed += momentum * clickMoveForce;
         momentum = 0;
         updateMouseMoveArrow(0, player, camera);
@@ -152,6 +161,35 @@ function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera
     handleCollision(player, audio);
 }
 
+function handleOnlyXMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
+    const moveDistance = 5 * clock.getDelta();
+    const spinSpeed = 1;
+    const vector = getMovementVector(camera, player);
+    for (let [key, _value] of Object.entries(pressedKeys)) {
+        switch (key) {
+            case keysEnum.FORWARD:
+                player.rotation.x += spinSpeed * DEGREE * vector.z;
+                player.rotation.z += spinSpeed * DEGREE * vector.x;
+                player.position.x += moveDistance * vector.x;
+                break;
+            case keysEnum.BACKWARD:
+                player.rotation.x += spinSpeed * -DEGREE * vector.z;
+                player.rotation.z += spinSpeed * DEGREE * vector.x;
+                player.position.x += -moveDistance * vector.x;
+                break;
+            case keysEnum.LEFT:
+                player.rotation.y += spinSpeed * -DEGREE;
+                player.position.x += moveDistance * vector.z;
+                break;
+            case keysEnum.RIGHT:
+                player.rotation.y += spinSpeed * DEGREE;
+                player.position.x += -moveDistance * vector.z;
+                break;
+        }
+    }
+    handleCameraMovement(0, 0, cameraPosition, camera, player);
+}
+
 function handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio) {
     const vector = getMovementVector(camera, player);
     if (yAxisDisabledOnClick) {
@@ -162,6 +200,7 @@ function handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio) {
 
 function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
     let movementVector = vector;
+    isAnimationRunning = true;
     new Tween({x: 0, y: 0, z: 0})
         .to({ ...multiplyVector(vector, playerSpeed / maxSpeed) }, 5)
         .onUpdate((coords) => {
@@ -177,9 +216,13 @@ function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
             handleCameraMovement(0, 0, cameraPosition, camera, player);
         })
         .onComplete(() => {
+            isAnimationRunning = false;
             decreasePlayerSpeed();
             if (playerSpeed && !isNullVector(movementVector)) {
                 animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
+            }
+            if (!playerSpeed) {
+                handleMissionModeEvents(clickMoveCount, player);
             }
         })
         .start();

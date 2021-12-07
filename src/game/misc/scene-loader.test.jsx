@@ -17,6 +17,8 @@ const mockMap = {
     backgroundTexture: "",
     music: jest.fn(),
     cameraDistance: 5,
+    driftDecreaseValue: 0.5,
+    missionMode: null, // possible values: "destoryObjects", "bowling" 
 
     // fields needed for static orbital circles
     sunPosition: mockPosition,
@@ -53,6 +55,8 @@ const mockMap = {
         yAxisDisabledOnClick: false,
         moveOnClick: false,
         // retainMomentum: false // currently unused
+        clickMoveForce: 0.5,
+        canNormalMoveOnXAxis: true
     }, 
 
     // basic objects (shapes)
@@ -86,7 +90,11 @@ const mockMap = {
                  * - innerSphere: used for movable boxes, a boundingSphere is computed half the size of the box
                  * - no value: default collider is calculated (boundingSphere)
                  */
-                colliderType: null
+                colliderType: null,
+
+                // mission related variables
+                checkIfDestroyed: true,
+                missionObject: false,
             },
 
             // optional parameter if the object has a ring around itself

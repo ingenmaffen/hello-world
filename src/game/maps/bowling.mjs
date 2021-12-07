@@ -19,13 +19,17 @@ export const bowling = {
     name: "Bowling Alley",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playBilliardMissionMusic,
+    cameraDistance: 20,
+    driftDecreaseValue: 0.1,
+    missionMode: "bowling",
     playerConfig: {
         color: 0xffffff,
         texture: 'none',
         normalMovementDisabled: true,
         yAxisDisabledOnClick: true,
         moveOnClick: true,
-        clickMoveForce: 0.5
+        clickMoveForce: 0.5,
+        canNormalMoveOnXAxis: true
     },
     objects: [
         {
@@ -75,6 +79,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -104,6 +109,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -134,6 +140,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -164,6 +171,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -194,6 +202,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -213,7 +222,7 @@ export const bowling = {
             ]
         },
         {
-            name: "pin4",
+            name: "pin6",
             pathToFile: `${objectsPathBase}/bowling_pin.glb`,
             scale: bowlingPinScale,
             position: {
@@ -224,6 +233,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -254,6 +264,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -284,6 +295,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -314,6 +326,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {
@@ -344,6 +357,7 @@ export const bowling = {
             otherAttributes: {
                 unmovable: false,
                 colliderType: 'box',
+                missionObject: true
             },
             colliders: [
                 {

@@ -6,8 +6,10 @@ import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.m
 let colliders = [];
 let mapMaxColliders;
 let missionObjects = [];
+let driftDecreaseValue = 0.5;
+let missionMode;
 
-export function initiateColliders(objects) {
+export function initiateColliders(objects, _missionMode) {
     colliders = [];
     objects.forEach((mesh) => {
         switch (getMeshColliderType(mesh)) {
@@ -22,11 +24,16 @@ export function initiateColliders(objects) {
                 break;
         }
     });
+    missionMode = _missionMode;
     setMissionObjects(objects);
 }
 
 export function setMapMaxColliders(value) {
     mapMaxColliders = value;
+}
+
+export function setDriftDecreaseValue(value) {
+    driftDecreaseValue = value || 0.5;
 }
 
 export function multiplyVector(vector, value) {
@@ -38,7 +45,7 @@ export function multiplyVector(vector, value) {
 }
 
 export function decreaseForceValue(value) {
-    value -= 0.5;
+    value -= driftDecreaseValue;
     return value < 0 ? 0 : value;
 }
 
@@ -91,6 +98,19 @@ export function handleDriftCollision(player, vector, audio) {
 export function isNullVector(vector) {
     // TODO: currently it is unusable, because the checks happen at the wrong time during the animation
     return !(vector.x || vector.y || vector.z);
+}
+
+export function handleMissionModeEvents(moveCount, player) {
+    if (missionMode === "bowling") {
+        resetPlayer(player);
+            if (moveCount % 2 === 0) {
+                // TODO: display text "Resetting pins!"
+                setTimeout(() => {
+                    // TODO: remove text
+                    resetBowlingPins();
+                }, 3000);
+            }
+    }
 }
 
 function resetPlayer(player) {
@@ -165,8 +185,8 @@ function getCollisionVectorWithAdaptivePlayerSpeed(player, object) {
 }
 
 function animateObjectDrift(object, vector, collider, force, sfxAudio) {
-    if (object?.otherAttributes?.parentObject) {
-        animateObjectDrift(object.otherAttributes.parentObject, vector, null, force, sfxAudio);
+    if (object?.otherAttributes?.parentObject?.mesh) {
+        animateObjectDrift(object.otherAttributes.parentObject.mesh, vector, null, force, sfxAudio);
     }
     let movementVector = vector;
     new Tween({ x: 0, y: 0, z: 0 })
@@ -177,8 +197,8 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
                 object.position.x += coords.x * distancePerFrame;
                 object.position.y += coords.y * distancePerFrame;
                 object.position.z += coords.z * distancePerFrame;
-                object.rotation.x += Math.cos(coords.x);
-                object.rotation.z += Math.sin(coords.z);
+                object.rotation.x += Math.atan(coords.x / coords.z);
+                object.rotation.z += Math.atan(coords.z / coords.x);
             }
             if (collider) {
                 updateCollider(object, collider);
@@ -237,25 +257,59 @@ function animateDestroyObject(object, collider, destinationObject) {
             updateCollider(object, collider);
         })
         .start();
-
 }
 
 function setMissionObjects(objects) {
-    objects
-        .filter(object => object?.otherAttributes?.checkIfDestroyed)
-        .forEach(object => {
-            missionObjects.push(object);
-    });
+    switch (missionMode) {
+        case "destoryObjects":
+            objects
+                .filter(object => object?.otherAttributes?.checkIfDestroyed)
+                .forEach(object => {
+                    missionObjects.push(object);
+            });
+            break;
+        case "bowling":
+            objects
+                .filter(object => object?.otherAttributes?.missionObject)
+                .forEach(object => {
+                    missionObjects.push(object);
+            });
+            break;
+    }
 }
 
 function checkMissionObjective() {
-    const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
-    if (missionObjects.length === objectsDone.length) {
-        // TODO: mission end screen -> back to the menu or restart
-        // TODO: add sound effect
-        // TODO: maybe some confetti effect
-        console.log("Mission Complete!");
+    switch (missionMode) {
+        case "destoryObjects":
+            const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
+            if (missionObjects.length === objectsDone.length) {
+                // TODO: mission end screen -> back to the menu or restart
+                // TODO: add sound effect
+                // TODO: maybe some confetti effect
+                console.log("Mission Complete!");
+            }
+            break;
+        case "bowling": {
+
+        }
     }
+}
+
+function resetBowlingPins() {
+    missionObjects.forEach(pin => {
+        pin.position.x = pin.otherAttributes.defaultPosition.x;
+        pin.position.y = pin.otherAttributes.defaultPosition.y;
+        pin.position.z = pin.otherAttributes.defaultPosition.z;
+        pin.rotation.x = 0;
+        pin.rotation.y = 0;
+        pin.rotation.z = 0;
+        pin.otherAttributes.parentObject.mesh.position.x = pin.otherAttributes.defaultPosition.x;
+        pin.otherAttributes.parentObject.mesh.position.y = pin.otherAttributes.defaultPosition.y;
+        pin.otherAttributes.parentObject.mesh.position.z = pin.otherAttributes.defaultPosition.z;
+        pin.otherAttributes.parentObject.mesh.rotation.x = 0;
+        pin.otherAttributes.parentObject.mesh.rotation.y = 0;
+        pin.otherAttributes.parentObject.mesh.rotation.z = 0;
+    });
 }
 
 function updateCollider(mesh, collider) {
@@ -291,7 +345,7 @@ function createDefaultCollider(mesh, colliders) {
 
 function createSphereColliderForBox(mesh, colliders) {
     const sphereColliderMesh = new Mesh(
-        new SphereGeometry(mesh.geometry.parameters.width / 2, 16, 16),
+        new SphereGeometry(mesh.geometry.parameters.height / 2, 16, 16),
         new MeshBasicMaterial()
     );
     sphereColliderMesh.position.x = mesh.position.x;

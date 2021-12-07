@@ -1,7 +1,7 @@
 import * as THREE from "../../node_modules/three/build/three.module.mjs";
 import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { initiatePlayer, handlePlayerMovement, setBackgroundMeshForPlayerMovement } from "./controls/player-controls.mjs";
-import { initiateColliders, setMapMaxColliders } from "./controls/collision.mjs";
+import { initiateColliders, setMapMaxColliders, setDriftDecreaseValue } from "./controls/collision.mjs";
 import { handleCameraMovement, setCameraDistance } from "./controls/camera-controls.mjs";
 import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load main menu
 import { boxSolarSystem } from "./maps/box-galaxy.mjs"; // TODO: debug
@@ -30,8 +30,9 @@ export function initMap(map) {
 
     scene = new THREE.Scene();
     const loadedScene = initiateScene(scene, map);
-    initiateColliders(loadedScene.sceneObjects);
+    initiateColliders(loadedScene.sceneObjects, map.missionMode);
     setMapMaxColliders(map.maxDistance);
+    setDriftDecreaseValue(map.driftDecreaseValue);
     audio = initiateSound(camera);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -65,5 +66,5 @@ function animate(time) {
     requestAnimationFrame(animate);
 }
 
-initMap(endless);
+initMap(bowling);
 requestAnimationFrame(animate);

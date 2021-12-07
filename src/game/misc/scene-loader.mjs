@@ -1,7 +1,7 @@
 import * as THREE from "../../../node_modules/three/build/three.module.mjs";
 import { GLTFLoader } from "../../assets/objects/loader/GLTFLoader.mjs";
 
-const debugCustomColliders = true;
+const debugCustomColliders = false;
 
 export function initiateScene(scene, map) {
     const sceneObjects = [];
@@ -124,6 +124,7 @@ function loadCustomObject(scene, customColliders, object) {
         gltf.scene.position.y = object.position.y;
         gltf.scene.position.z = object.position.z;
 
+        object.mesh = gltf.scene
         scene.add(gltf.scene);
     });
 
@@ -135,8 +136,8 @@ function loadCustomObject(scene, customColliders, object) {
         colliderObject.otherAttributes = {
             ...object.otherAttributes,
             ...colliderObject.otherAttributes,
-            // TODO: fix async issue
-            // parentObject: !object?.otherAttributes?.unmovable ? object : null 
+            parentObject: !object?.otherAttributes?.unmovable ? object : null,
+            defaultPosition: object.position
         };
         addObjectToScene(scene, customColliders, colliderObject);
     });
