@@ -8,6 +8,7 @@ let mapMaxColliders;
 let missionObjects = [];
 let driftDecreaseValue = 0.5;
 let missionMode;
+let bowlingScore = [];
 
 export function initiateColliders(objects, _missionMode) {
     colliders = [];
@@ -104,6 +105,9 @@ export function handleMissionModeEvents(moveCount, player) {
     if (missionMode === "bowling") {
         resetPlayer(player);
             if (moveCount % 2 === 0) {
+                const movedPins = missionObjects.filter(object => !areVectorsEqual(object.position, object.otherAttributes.defaultPosition));
+                bowlingScore.push(movedPins.length);
+                checkMissionObjective();
                 // TODO: display text "Resetting pins!"
                 setTimeout(() => {
                     // TODO: remove text
@@ -284,18 +288,43 @@ function checkMissionObjective() {
     switch (missionMode) {
         case "destoryObjects":
             const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
-            console.log(missionObjects);
             if (missionObjects.length === objectsDone.length) {
-                // TODO: mission end screen -> back to the menu or restart
-                // TODO: add sound effect
-                // TODO: maybe some confetti effect
-                console.log("Mission Complete!");
+                handleMissionComplete();
             }
             break;
         case "bowling": {
-
+            if (bowlingScore.length >= 5) {
+                const missionCompleteTreshHold = bowlingScore.filter(value => value >= 9);
+                const achievmentUnlockThreshHold = bowlingScore.filter(value => value >= 10);
+                if (missionCompleteTreshHold.length === bowlingScore.length) {
+                    handleMissionComplete();
+                }
+                else {
+                    handleMissionFailed();
+                }
+            }
         }
     }
+}
+
+function handleMissionComplete() {
+    // TODO: mission end screen -> back to the menu or restart
+    // TODO: add sound effect
+    // TODO: maybe some confetti effect
+    console.log("Mission Complete!");
+}
+
+function handleMissionFailed() {
+    // TODO: mission end screen -> back to the menu or restart
+    // TODO: add sound effect
+    // TODO: add monochrome effect
+    console.log("Mission Failed!");
+}
+
+function areVectorsEqual(vector1, vector2) {
+    return vector1.x === vector2.x &&
+        vector1.y === vector2.y &&
+        vector1.z === vector2.z;
 }
 
 function resetBowlingPins() {
