@@ -45,7 +45,7 @@ const texturePathBase = "src/assets/textures";
 const sunPosition = {
     x: 0,
     y: 0,
-    z: 209,
+    z: 0,
 };
 
 /*
@@ -57,8 +57,18 @@ export const boxSolarSystem = {
     music: playEndlessModeMusic,
     planetArrangement,
     sunPosition,
+    cameraDistance: 200,
+    missionMode: "destoryObjects",
+    playerConfig: {
+        texturePath: `${texturePathBase}/2k_sun.jpg`,
+        destroysObjects: true,
+        playerSize: 109,
+        hasLight: true,
+        lightColor: 0xf55607,
+        playerSpeedDiff: 10
+    },
     objects: [
-        {
+        /* {
             name: "sun",
             texture: `${texturePathBase}/2k_sun.jpg`,
             position: {
@@ -75,7 +85,7 @@ export const boxSolarSystem = {
             geometry: "BoxGeometry",
             material: "MeshBasicMaterial",
             materialOptions: null,
-        },
+        }, */
         {
             name: "mercury",
             texture: `${texturePathBase}/2k_mercury.jpg`,
@@ -109,12 +119,28 @@ export const boxSolarSystem = {
             materialOptions: null,
         },
         {
+            name: "earth",
+            texture: `${texturePathBase}/2k_venus_atmosphere.jpg`,
+            position: {
+                x: sunPosition.x - Math.sin(planetArrangement.earth.degree) * planetArrangement.earth.distance,
+                y: sunPosition.y - 0,
+                z: sunPosition.z - Math.cos(planetArrangement.earth.degree) * planetArrangement.earth.distance,
+            },
+            otherAttributes: {
+                colliderType: "innerSphere"
+            },
+            constructorParams: `2, 2, 2`,
+            geometry: "BoxGeometry",
+            material: "MeshStandardMaterial",
+            materialOptions: null,
+        },
+        {
             name: "moon",
             texture: `${texturePathBase}/2k_moon.jpg`,
             position: {
-                x: -2,
-                y: 2,
-                z: -2,
+                x: sunPosition.x - Math.sin(planetArrangement.earth.degree) * planetArrangement.earth.distance - 2,
+                y: sunPosition.y + 2 ,
+                z: sunPosition.z - Math.cos(planetArrangement.earth.degree) * planetArrangement.earth.distance - 2,
             },
             otherAttributes: {
                 colliderType: "innerSphere"

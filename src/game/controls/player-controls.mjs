@@ -11,6 +11,7 @@ import {
 import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
 import { handleCollision, handleDriftCollision, multiplyVector, isNullVector, handleMissionModeEvents } from "./collision.mjs";
+import { addAmbientLight } from "../misc/scene-loader.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -21,6 +22,7 @@ let mouseHoldArrow;
 let backgroundMesh;
 let isAnimationRunning = false;
 let clickMoveCount = 0;
+let playerSpeedBuildUp = 0.1;
 
 // map specific modifiers
 let yAxisDisabledOnClick = false;
@@ -42,10 +44,12 @@ const keysEnum = {
 
 export function initiatePlayer(playerConfig, scene) {
     clickMoveCount = 0;
+    const playerSize = playerConfig?.playerSize || 2;
     const texturePathBase = "src/assets/textures";
-    const geometry = new SphereGeometry(2, 32, 16);
+    const texturePath = playerConfig?.texturePath || `${texturePathBase}/2k_earth_daymap.jpg`;
+    const geometry = new SphereGeometry(playerSize, 32, 16);
     const texture =
-        playerConfig?.texture === "none" ? null : new TextureLoader().load(`${texturePathBase}/2k_earth_daymap.jpg`);
+        playerConfig?.texture === "none" ? null : new TextureLoader().load(texturePath);
     const player = new Mesh(geometry, new MeshStandardMaterial({ map: texture, color: playerConfig?.color }));
     player.rotation.z = -25 * DEGREE;
 
@@ -55,8 +59,13 @@ export function initiatePlayer(playerConfig, scene) {
     moveOnClick = playerConfig?.moveOnClick;
     clickMoveForce = playerConfig?.clickMoveForce || clickMoveForce;
     canNormalMoveOnXAxis = playerConfig?.canNormalMoveOnXAxis;
+    playerSpeedBuildUp = playerConfig?.playerSpeedDiff || 0.1;
 
     scene.add(player);
+
+    if (playerConfig?.hasLight) {
+        addAmbientLight(scene);
+    }
 
     if (moveOnClick) {
         mouseHoldArrow = initiatePlayerMouseMovementHelper(scene);
@@ -83,7 +92,7 @@ export function handlePlayerMovement(pressedKeys, clock, player, cameraPosition,
 export function buildUpMovementOnMouseDown(player, camera) {
     isMouseHeldDown = true;
     if (moveOnClick && !isAnimationRunning) {
-        momentum = momentum > maxSpeed ? momentum : momentum + 0.1;
+        momentum = momentum > maxSpeed ? momentum : momentum + playerSpeedBuildUp;
         updateMouseMoveArrow(momentum, player, camera);
         setTimeout(() => {
             if (isMouseHeldDown) {
@@ -117,7 +126,7 @@ export function getMaxSpeed() {
 }
 
 function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
-    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + 0.1;
+    playerSpeed = playerSpeed > maxSpeed ? playerSpeed : playerSpeed + playerSpeedBuildUp;
     playerSpeed = isPlayerMoving(pressedKeys) ? playerSpeed : 0;
     const verticalSpeed = playerSpeed / 10;
     const spinSpeed = playerSpeed / 5;

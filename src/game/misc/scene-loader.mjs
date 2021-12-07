@@ -27,6 +27,10 @@ export function initiateScene(scene, map) {
     };
 }
 
+export function addAmbientLight(scene) {
+    scene.add(new THREE.AmbientLight(0x666666, 2));
+}
+
 function addBackground(scene, map) {
     const bgGeometry = new THREE.SphereGeometry(90 * 200, 32, 16);
     const bgTexture = map.backgroundTexture ? new THREE.TextureLoader().load(map.backgroundTexture) : null;
