@@ -58,6 +58,7 @@ export const solarSystem = {
     name: "Solar System",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playEndlessModeMusic,
+    missionMode: "destoryObjects",
     planetArrangement,
     sunPosition,
     objects: [
@@ -90,6 +91,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
         {
             name: "venus",
@@ -103,6 +107,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
         {
             name: "moon",
@@ -129,6 +136,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
         {
             name: "jupiter",
@@ -142,6 +152,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
         {
             name: "saturn",
@@ -155,6 +168,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            },
             ring: {
                 texture: `${texturePathBase}/2k_saturn_ring_alpha.png`,
                 innerRadius: 0.94,
@@ -173,6 +189,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
         {
             name: "neptune",
@@ -186,6 +205,9 @@ export const solarSystem = {
             geometry: "SphereGeometry",
             material: "MeshStandardMaterial",
             materialOptions: null,
+            otherAttributes: {
+                checkIfDestroyed: true
+            }
         },
     ],
 };

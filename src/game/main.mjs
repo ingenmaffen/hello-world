@@ -12,7 +12,7 @@ import { initiateScene } from "./misc/scene-loader.mjs";
 import { initiateSound } from "./sounds/sfx.mjs";
 import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
 import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
-import { initiateEndlessMode } from "./misc/endless-mode.mjs";
+import { initiateEndlessMode, updateEndlessWorld } from "./misc/endless-mode.mjs";
 
 let camera;
 let scene;
@@ -62,9 +62,10 @@ function animate(time) {
         renderer.render(scene, camera);
         update(time);
         handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
+        updateEndlessWorld(player)
     }
     requestAnimationFrame(animate);
 }
 
-initMap(bowling);
+initMap(endless);
 requestAnimationFrame(animate);

@@ -5,5 +5,6 @@ export const endless = {
     ...solarSystem,
     name: "Endless",
     music: playEndlessModeMusic,
-    endless: true
+    endless: true,
+    missionMode: null,
 }

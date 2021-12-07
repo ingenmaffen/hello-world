@@ -62,7 +62,7 @@ export function handleCollision(player, audio) {
             } else {
                 const vector = getCollisionVectorWithAdaptivePlayerSpeed(player, object.mesh);
                 playCollisionSound(audio);
-                animateMovement(object.mesh, vector, object.collider);
+                animateMovement(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, audio);
                 updateCollider(object.mesh, object.collider);
             }
         }
@@ -220,7 +220,7 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
         .start();
 }
 
-function animateMovement(object, vector, collider) {
+function animateMovement(object, vector, collider, sfxAudio) {
     const force = 0.05;
     const coords = { x: 0, y: 0, z: 0 };
     new Tween(coords)
@@ -237,6 +237,7 @@ function animateMovement(object, vector, collider) {
             updateCollider(object, collider);
         })
         .onComplete(() => {
+            handleObjectDriftCollision(object, collider, vector, sfxAudio);
             updateCollider(object, collider);
         })
         .start();
@@ -260,6 +261,7 @@ function animateDestroyObject(object, collider, destinationObject) {
 }
 
 function setMissionObjects(objects) {
+    missionObjects = [];
     switch (missionMode) {
         case "destoryObjects":
             objects
@@ -282,6 +284,7 @@ function checkMissionObjective() {
     switch (missionMode) {
         case "destoryObjects":
             const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
+            console.log(missionObjects);
             if (missionObjects.length === objectsDone.length) {
                 // TODO: mission end screen -> back to the menu or restart
                 // TODO: add sound effect
