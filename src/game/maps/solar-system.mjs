@@ -58,7 +58,7 @@ export const solarSystem = {
     name: "Solar System",
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playEndlessModeMusic,
-    missionMode: "destoryObjects",
+    missionMode: "destroyObjects",
     planetArrangement,
     sunPosition,
     objects: [

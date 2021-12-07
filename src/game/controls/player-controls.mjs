@@ -60,6 +60,7 @@ export function initiatePlayer(playerConfig, scene) {
     clickMoveForce = playerConfig?.clickMoveForce || clickMoveForce;
     canNormalMoveOnXAxis = playerConfig?.canNormalMoveOnXAxis;
     playerSpeedBuildUp = playerConfig?.playerSpeedDiff || 0.1;
+    player.destroysObjects = playerConfig?.destroysObjects;
 
     scene.add(player);
 

@@ -18,7 +18,7 @@ const mockMap = {
     music: jest.fn(),
     cameraDistance: 5,
     driftDecreaseValue: 0.5,
-    missionMode: null, // possible values: "destoryObjects", "bowling" 
+    missionMode: null, // possible values: "destroyObjects", "bowling" 
 
     // fields needed for static orbital circles
     sunPosition: mockPosition,

@@ -58,7 +58,7 @@ export const boxSolarSystem = {
     planetArrangement,
     sunPosition,
     cameraDistance: 200,
-    missionMode: "destoryObjects",
+    missionMode: "destroyObjects",
     playerConfig: {
         texturePath: `${texturePathBase}/2k_sun.jpg`,
         destroysObjects: true,
@@ -95,7 +95,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.mercury.degree) * planetArrangement.mercury.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -111,7 +112,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.venus.degree) * planetArrangement.venus.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -127,7 +129,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.earth.degree) * planetArrangement.earth.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -143,7 +146,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.earth.degree) * planetArrangement.earth.distance - 2,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `0.25, 0.25, 0.25`,
             geometry: "BoxGeometry",
@@ -159,7 +163,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.mars.degree) * planetArrangement.mars.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `2, 2, 2`,
             geometry: "BoxGeometry",
@@ -175,7 +180,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.jupiter.degree) * planetArrangement.jupiter.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `22, 22, 22`,
             geometry: "BoxGeometry",
@@ -191,7 +197,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.saturn.degree) * planetArrangement.saturn.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `19, 19, 19`,
             geometry: "BoxGeometry",
@@ -213,7 +220,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.uranus.degree) * planetArrangement.uranus.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `8, 8, 8`,
             geometry: "BoxGeometry",
@@ -229,7 +237,8 @@ export const boxSolarSystem = {
                 z: sunPosition.z - Math.cos(planetArrangement.neptune.degree) * planetArrangement.neptune.distance,
             },
             otherAttributes: {
-                colliderType: "innerSphere"
+                colliderType: "innerSphere",
+                checkIfDestroyed: true
             },
             constructorParams: `7.5, 7.5, 7.5`,
             geometry: "BoxGeometry",

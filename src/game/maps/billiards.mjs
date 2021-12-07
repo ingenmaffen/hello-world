@@ -32,7 +32,7 @@ export const billiards = {
     backgroundTexture: `${texturePathBase}/2k_stars_milky_way.jpg`,
     music: playBilliardMissionMusic,
     cameraDistance: 30,
-    missionMode: "destoryObjects",
+    missionMode: "destroyObjects",
     maxDistance: {
         x: tablePosition.x + (11.5 * tableScale),
         z: tablePosition.z + (6 * tableScale)

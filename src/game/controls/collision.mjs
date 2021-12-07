@@ -57,10 +57,18 @@ export function handleCollision(player, audio) {
     playerCollider.applyMatrix4(player.matrixWorld);
     colliders.forEach((object) => {
         if (isObjectColliding(playerCollider, object)) {
-            if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
+            if (player.destroysObjects) {
+                animateDestroyObject(object.mesh, object.collider, player.position);
+                if (object.mesh.otherAttributes) {  
+                    object.mesh.otherAttributes.destroyed = true;
+                }
+                checkMissionObjective();
+            }
+            else if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
                 setPlayerSpeed(-1);
-            } else {
+            } 
+            else {
                 const vector = getCollisionVectorWithAdaptivePlayerSpeed(player, object.mesh);
                 playCollisionSound(audio);
                 animateMovement(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, audio);
@@ -267,7 +275,7 @@ function animateDestroyObject(object, collider, destinationObject) {
 function setMissionObjects(objects) {
     missionObjects = [];
     switch (missionMode) {
-        case "destoryObjects":
+        case "destroyObjects":
             objects
                 .filter(object => object?.otherAttributes?.checkIfDestroyed)
                 .forEach(object => {
@@ -286,7 +294,7 @@ function setMissionObjects(objects) {
 
 function checkMissionObjective() {
     switch (missionMode) {
-        case "destoryObjects":
+        case "destroyObjects":
             const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
             if (missionObjects.length === objectsDone.length) {
                 handleMissionComplete();
