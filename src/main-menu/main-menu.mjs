@@ -51,7 +51,7 @@ function loadMainMenu() {
         {
             text: "Exit",
             callback: () => {
-                console.log("exit");
+                window.close();
             }
         }
     ];
