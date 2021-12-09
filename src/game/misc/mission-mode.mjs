@@ -4,6 +4,7 @@ import { resetPlayer } from "../controls/player-controls.mjs";
 let missionMode;
 let missionObjects = [];
 let bowlingScore = [];
+let missionOver = false;
 
 export function setMissionMode(_missionMode) {
     missionMode = _missionMode;
@@ -11,6 +12,8 @@ export function setMissionMode(_missionMode) {
 
 export function setMissionObjects(objects) {
     missionObjects = [];
+    bowlingScore = [];
+    missionOver = false;
     switch (missionMode) {
         case "destroyObjects":
             objects
@@ -33,7 +36,9 @@ export function handleMissionModeEvents(moveCount, player) {
     if (missionMode === "bowling") {
         resetPlayer(player);
         if (moveCount % 2 === 0) {
-            const movedPins = missionObjects.filter(object => !areVectorsEqual(object.position, object.otherAttributes.defaultPosition));
+            const movedPins = missionObjects.filter(
+                object => !areVectorsEqual(object.otherAttributes.parentObject.mesh.position, object.otherAttributes.defaultPosition)
+            );
             bowlingScore.push(movedPins.length);
             checkMissionObjective();
             // TODO: display text "Resetting pins!"
@@ -46,21 +51,23 @@ export function handleMissionModeEvents(moveCount, player) {
 }
 
 export function checkMissionObjective() {
-    switch (missionMode) {
-        case "destroyObjects":
-            const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
-            if (missionObjects.length === objectsDone.length) {
-                handleMissionComplete();
-            }
-            break;
-        case "bowling": {
-            if (bowlingScore.length >= 5) {
-                const missionCompleteTreshHold = bowlingScore.filter(value => value >= 9);
-                if (missionCompleteTreshHold.length === bowlingScore.length) {
+    if (!missionOver) {
+        switch (missionMode) {
+            case "destroyObjects":
+                const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
+                if (missionObjects.length === objectsDone.length) {
                     handleMissionComplete();
                 }
-                else {
-                    handleMissionFailed();
+                break;
+            case "bowling": {
+                if (bowlingScore.length >= 5) {
+                    const missionCompleteTreshHold = bowlingScore.filter(value => value >= 9);
+                    if (missionCompleteTreshHold.length === bowlingScore.length) {
+                        handleMissionComplete();
+                    }
+                    else {
+                        handleMissionFailed();
+                    }
                 }
             }
         }
@@ -72,6 +79,7 @@ function handleMissionComplete() {
     // TODO: add sound effect
     // TODO: maybe some confetti effect
     console.log("Mission Complete!");
+    missionOver = true;
 }
 
 function handleMissionFailed() {
@@ -79,6 +87,7 @@ function handleMissionFailed() {
     // TODO: add sound effect
     // TODO: add monochrome effect
     console.log("Mission Failed!");
+    missionOver = true;
 }
 
 function resetBowlingPins() {

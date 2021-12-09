@@ -12,6 +12,7 @@ import { initiateSound } from "./sounds/sfx.mjs";
 import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
 import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
 import { setMissionMode, setMissionObjects } from "./misc/mission-mode.mjs";
+import { setScene } from "./misc/common.mjs";
 
 let camera;
 let scene;
@@ -28,6 +29,8 @@ export function initMap(map) {
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100 * 200);
 
     scene = new THREE.Scene();
+    setScene(scene);
+    
     const loadedScene = initiateScene(scene, map);
     initiateColliders(loadedScene.sceneObjects);
     setMapMaxColliders(map.maxDistance);
@@ -63,5 +66,5 @@ function animate(time) {
     requestAnimationFrame(animate);
 }
 
-initMap(solarSystem);
+initMap(bowling);
 requestAnimationFrame(animate);

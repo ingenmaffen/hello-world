@@ -1,7 +1,7 @@
 import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_modules/three/build/three.module.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
-import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.mjs";
-import { decreaseForceValue, multiplyVector, isNullVector, getEmptyFunction, getNullVector } from "../misc/common.mjs";
+import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed, resetPlayer } from "./player-controls.mjs";
+import { decreaseForceValue, multiplyVector, isNullVector, getEmptyFunction, getNullVector, getPlayerCollider, removeObject } from "../misc/common.mjs";
 import { checkMissionObjective } from "../misc/mission-mode.mjs";
 import { animate } from "../misc/animations.mjs";
 
@@ -35,14 +35,11 @@ export function setDriftDecreaseValue(value) {
 }
 
 export function handleCollision(player, audio) {
-    player.geometry.computeBoundingSphere();
-    player.updateMatrixWorld();
-    const playerCollider = player.geometry.boundingSphere.clone();
-    playerCollider.applyMatrix4(player.matrixWorld);
+    const playerCollider = getPlayerCollider(player);
     colliders.forEach((object) => {
         if (isObjectColliding(playerCollider, object)) {
             if (player.destroysObjects) {
-                animateDestroyObject(object.mesh, object.collider, player.position);
+                animateDestroyObject(object.mesh);
                 if (object.mesh.otherAttributes) {  
                     object.mesh.otherAttributes.destroyed = true;
                 }
@@ -64,10 +61,7 @@ export function handleCollision(player, audio) {
 }
 
 export function handleDriftCollision(player, vector, audio) {
-    player.geometry.computeBoundingSphere();
-    player.updateMatrixWorld();
-    const playerCollider = player.geometry.boundingSphere.clone();
-    playerCollider.applyMatrix4(player.matrixWorld);
+    const playerCollider = getPlayerCollider(player);
     let updatedVector;
     colliders.forEach((object) => {
         if (isObjectColliding(playerCollider, object)) {
@@ -98,7 +92,7 @@ function handleObjectDriftCollision(driftingObject, objectCollider, vector, audi
                 driftingObject.otherAttributes.destroyed = true;
                 checkMissionObjective();
                 updatedVector = multiplyVector(vector, 0);
-                animateDestroyObject(driftingObject, objectCollider, object.mesh);
+                animateDestroyObject(driftingObject);
             }
             else if (object.mesh.otherAttributes && object.mesh.otherAttributes.unmovable) {
                 playCollisionSound(audio);
@@ -205,31 +199,17 @@ function animateObjectNormalMovement(object, toVector3, collider, sfxAudio) {
             object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
             object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
         }
+        handleObjectDriftCollision(object, collider, toVector3, sfxAudio);
         updateCollider(object, collider);
     };
     const onCompleteCallback = () => {
-        handleObjectDriftCollision(object, collider, toVector3, sfxAudio);
         updateCollider(object, collider);
     };
     animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback);
 }
 
-function animateDestroyObject(object, collider, destinationObject) {
-    const preAnimationCallback = getEmptyFunction();
-    const fromVector3 = object.position;
-    const toVector3 = destinationObject.position;
-    const animationDuration = 50;
-    const onUpdateCallback = (coords) => {
-        if (coords) {
-            object.position.x += coords.x;
-            object.position.y += coords.y;
-            object.position.z += coords.z;
-        }
-    };
-    const onCompleteCallback = () => {
-        updateCollider(object, collider);
-    };
-    animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback);
+function animateDestroyObject(object) {
+    removeObject(object);
 }
 
 function updateCollider(mesh, collider) {
@@ -293,7 +273,7 @@ function createBoxCollider(mesh, colliders) {
 }
 
 function handleMapMaxCollider(object, collider) {
-    const axes = ['x', 'y', 'z'];
+    const axes = ['x', 'z'];
     if (mapMaxColliders) {
         axes.forEach(axis => {
             if (mapMaxColliders[axis] && 
@@ -303,6 +283,9 @@ function handleMapMaxCollider(object, collider) {
             }
         });
     }
+    if (mapMaxColliders?.y === 0) {
+        object.position.y = 0;
+    } 
     updateCollider(object, collider);
 }
  

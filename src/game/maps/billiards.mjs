@@ -35,7 +35,8 @@ export const billiards = {
     missionMode: "destroyObjects",
     maxDistance: {
         x: tablePosition.x + (11.5 * tableScale),
-        z: tablePosition.z + (6 * tableScale)
+        z: tablePosition.z + (6 * tableScale),
+        y: 0
     },
     playerConfig: {
         color: 0xFFFFFF,

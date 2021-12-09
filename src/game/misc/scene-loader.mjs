@@ -141,7 +141,7 @@ function loadCustomObject(scene, customColliders, object) {
             ...object.otherAttributes,
             ...colliderObject.otherAttributes,
             parentObject: !object?.otherAttributes?.unmovable ? object : null,
-            defaultPosition: colliderObject.position
+            defaultPosition: object.position
         };
         addObjectToScene(scene, customColliders, colliderObject);
     });

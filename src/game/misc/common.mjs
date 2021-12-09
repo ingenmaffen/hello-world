@@ -1,5 +1,11 @@
 import { Vector3 } from "../../../node_modules/three/build/three.module.mjs";
 
+let scene;
+
+export function setScene(_scene) {
+    scene = _scene;
+}
+
 export function decreaseForceValue(value, diff) {
     value -= diff;
     return value < 0 ? 0 : value;
@@ -30,4 +36,16 @@ export function getNullVector() {
 
 export function getEmptyFunction() {
     return () => {};
+}
+
+export function getPlayerCollider(player) {
+    player.geometry.computeBoundingSphere();
+    player.updateMatrixWorld();
+    const playerCollider = player.geometry.boundingSphere.clone();
+    playerCollider.applyMatrix4(player.matrixWorld);
+    return playerCollider;
+}
+
+export function removeObject(object) {
+    scene.remove(object);
 }
