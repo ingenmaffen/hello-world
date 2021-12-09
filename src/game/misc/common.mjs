@@ -23,3 +23,11 @@ export function multiplyVector(vector, value) {
         vector.z * value
     );
 }
+
+export function getNullVector() {
+    return new Vector3(0, 0, 0);
+}
+
+export function getEmptyFunction() {
+    return () => {};
+}

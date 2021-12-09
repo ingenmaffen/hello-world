@@ -8,12 +8,12 @@ import {
     Group,
     MeshBasicMaterial,
 } from "../../../node_modules/three/build/three.module.mjs";
-import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
 import { handleCollision, handleDriftCollision } from "./collision.mjs";
 import { addAmbientLight } from "../misc/scene-loader.mjs";
-import { decreaseForceValue, isNullVector, multiplyVector } from "../misc/common.mjs";
+import { decreaseForceValue, isNullVector, multiplyVector, getNullVector } from "../misc/common.mjs";
 import { handleMissionModeEvents } from "../misc/mission-mode.mjs";
+import { animate } from "../misc/animations.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -219,32 +219,35 @@ function handlePlayerDriftMovement(camera, player, cameraPosition, sfxAudio) {
 
 function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
     let movementVector = vector;
-    isAnimationRunning = true;
-    new Tween({x: 0, y: 0, z: 0})
-        .to({ ...multiplyVector(vector, playerSpeed / maxSpeed) }, 5)
-        .onUpdate((coords) => {
-            if (coords) {
-                const distancePerFrame = playerSpeed / 5;
-                player.position.x += coords.x * distancePerFrame;
-                player.position.y += coords.y * distancePerFrame;
-                player.position.z += coords.z * distancePerFrame;
-                player.rotation.x += Math.cos(coords.x);
-                player.rotation.z += Math.sin(coords.z);
-            }
-            movementVector = handleDriftCollision(player, vector, sfxAudio);
-            handleCameraMovement(0, 0, cameraPosition, camera, player);
-        })
-        .onComplete(() => {
-            isAnimationRunning = false;
-            decreasePlayerSpeed();
-            if (playerSpeed && !isNullVector(movementVector)) {
-                animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
-            }
-            if (!playerSpeed) {
-                handleMissionModeEvents(clickMoveCount, player);
-            }
-        })
-        .start();
+    const preAnimationCallback = () => {
+        isAnimationRunning = true;
+    };
+    const fromVector3 = getNullVector();
+    const toVector3 = multiplyVector(vector, playerSpeed / maxSpeed);
+    const animationDuration = 5;
+    const onUpdateCallback = (coords) => {
+        if (coords) {
+            const distancePerFrame = playerSpeed / 5;
+            player.position.x += coords.x * distancePerFrame;
+            player.position.y += coords.y * distancePerFrame;
+            player.position.z += coords.z * distancePerFrame;
+            player.rotation.x += Math.cos(coords.x);
+            player.rotation.z += Math.sin(coords.z);
+        }
+        movementVector = handleDriftCollision(player, vector, sfxAudio);
+        handleCameraMovement(0, 0, cameraPosition, camera, player);
+    };
+    const onCompleteCallback = () => {
+        isAnimationRunning = false;
+        decreasePlayerSpeed();
+        if (playerSpeed && !isNullVector(movementVector)) {
+            animatePlayerDrift(movementVector, player, camera, cameraPosition, sfxAudio);
+        }
+        if (!playerSpeed) {
+            handleMissionModeEvents(clickMoveCount, player);
+        }
+    };
+    animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback)
 }
 
 function decreasePlayerSpeed() { 

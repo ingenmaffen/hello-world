@@ -1,9 +1,9 @@
 import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_modules/three/build/three.module.mjs";
-import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
 import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.mjs";
-import { decreaseForceValue, multiplyVector, isNullVector } from "../misc/common.mjs";
+import { decreaseForceValue, multiplyVector, isNullVector, getEmptyFunction, getNullVector } from "../misc/common.mjs";
 import { checkMissionObjective } from "../misc/mission-mode.mjs";
+import { animate } from "../misc/animations.mjs";
 
 let colliders = [];
 let mapMaxColliders;
@@ -55,7 +55,7 @@ export function handleCollision(player, audio) {
             else {
                 const vector = getCollisionVectorWithAdaptivePlayerSpeed(player, object.mesh);
                 playCollisionSound(audio);
-                animateMovement(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, audio);
+                animateObjectNormalMovement(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, audio);
                 // animateObjectDrift(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, getPlayerSpeed(), audio);
                 updateCollider(object.mesh, object.collider);
             }
@@ -89,22 +89,6 @@ export function handleDriftCollision(player, vector, audio) {
     return updatedVector || vector;
 }
 
-function getUpdatedVectorForObjectCollision(vector, collisionVector) {
-    // TODO: implement updated collision vector stuff
-}
-
-function getUpdatedCollisionVectorForTable(vector) {
-    // TODO: make calculations better
-    // TODO: extend to work with y axis as well
-    const angle = Math.atan(vector.x / vector.z);
-    const hypotenuse = vector.x / Math.sin(angle);
-    return new Vector3(
-        hypotenuse * Math.cos(Math.PI - angle),
-        0,
-        hypotenuse * Math.sin(Math.PI - angle),
-    )
-}
-
 function handleObjectDriftCollision(driftingObject, objectCollider, vector, audio) {
     let updatedVector;
     colliders.forEach(object => {
@@ -130,6 +114,21 @@ function handleObjectDriftCollision(driftingObject, objectCollider, vector, audi
     return updatedVector || vector;
 }
 
+function getUpdatedVectorForObjectCollision(vector, collisionVector) {
+    // TODO: implement updated collision vector stuff
+}
+
+function getUpdatedCollisionVectorForTable(vector) {
+    // TODO: make calculations better
+    const angle = Math.atan(vector.x / vector.z);
+    const hypotenuse = vector.x / Math.sin(angle);
+    return new Vector3(
+        hypotenuse * Math.cos(Math.PI - angle),
+        0,
+        hypotenuse * Math.sin(Math.PI - angle),
+    )
+}
+
 function getCollisionVector(player, object) {
     return new Vector3(
         object.position.x - player.position.x,
@@ -152,80 +151,85 @@ function getCollisionVectorWithAdaptivePlayerSpeed(player, object) {
     return multiplyVector(vector, vectorScale);
 }
 
+
+
 function animateObjectDrift(object, vector, collider, force, sfxAudio) {
-    if (object?.otherAttributes?.parentObject?.mesh) {
-        animateObjectDrift(object.otherAttributes.parentObject.mesh, vector, null, force, sfxAudio);
-    }
+    const preAnimationCallback = () => {
+        if (object?.otherAttributes?.parentObject?.mesh) {
+            animateObjectDrift(object.otherAttributes.parentObject.mesh, vector, null, force, sfxAudio);
+        }
+    };
     let movementVector = vector;
-    new Tween({ x: 0, y: 0, z: 0 })
-        .to({ ...multiplyVector(vector, force / getMaxSpeed()) }, 5)
-        .onUpdate((coords) => {
-            if (coords) {
-                const distancePerFrame = force / 5;
-                object.position.x += coords.x * distancePerFrame;
-                object.position.y += coords.y * distancePerFrame;
-                object.position.z += coords.z * distancePerFrame;
-                object.rotation.x += Math.atan(coords.x / coords.z);
-                object.rotation.z += Math.atan(coords.z / coords.x);
+    const fromVector3 = getNullVector();
+    const toVector3 = multiplyVector(vector, force / getMaxSpeed());
+    const animationDuration = 5;
+    const onUpdateCallback = (coords) => {
+        if (coords) {
+            const distancePerFrame = force / 5;
+            object.position.x += coords.x * distancePerFrame;
+            object.position.y += coords.y * distancePerFrame;
+            object.position.z += coords.z * distancePerFrame;
+            object.rotation.x += Math.atan(coords.x / coords.z);
+            object.rotation.z += Math.atan(coords.z / coords.x);
+        }
+        if (collider) {
+            updateCollider(object, collider);
+        }
+    };
+    const onCompleteCallback = () => {
+        force = decreaseForceValue(force, driftDecreaseValue);
+        if (force && collider) {
+            movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
+            handleMapMaxCollider(object, collider);
+            if (!isNullVector(movementVector)) {
+                animateObjectDrift(object, movementVector, collider, force, sfxAudio);
             }
-            if (collider) {
-                updateCollider(object, collider);
-            }
-        })
-        .onComplete(() => {
-            force = decreaseForceValue(force, driftDecreaseValue);
-            if (force && collider) {
-                movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
-                handleMapMaxCollider(object, collider);
-                if (!isNullVector(movementVector)) {
-                    animateObjectDrift(object, movementVector, collider, force, sfxAudio);
-                }
-            }
-            if (collider) {
-                updateCollider(object, collider);
-            }
-        })
-        .start();
+        }
+        if (collider) {
+            updateCollider(object, collider);
+        }
+    };
+    animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback);
 }
 
-function animateMovement(object, vector, collider, sfxAudio) {
+function animateObjectNormalMovement(object, toVector3, collider, sfxAudio) {
     const force = 0.05;
-    const coords = { x: 0, y: 0, z: 0 };
-    new Tween(coords)
-        .to({ ...vector }, 300)
-        .easing(Easing.Quadratic.InOut)
-        .onUpdate((coords) => {
-            if (coords) {
-                object.position.x += coords.x * force;
-                object.position.y += coords.y * force;
-                object.position.z += coords.z * force;
-                object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
-                object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
-            }
-            updateCollider(object, collider);
-        })
-        .onComplete(() => {
-            handleObjectDriftCollision(object, collider, vector, sfxAudio);
-            updateCollider(object, collider);
-        })
-        .start();
+    const preAnimationCallback = getEmptyFunction();
+    const fromVector3 = getNullVector();
+    const animationDuration = 300;
+    const onUpdateCallback = (coords) => {
+        if (coords) {
+            object.position.x += coords.x * force;
+            object.position.y += coords.y * force;
+            object.position.z += coords.z * force;
+            object.rotation.x += Math.cos(coords.x) * Math.pow(force, 1.5);
+            object.rotation.z += Math.sin(coords.z) * Math.pow(force, 1.5);
+        }
+        updateCollider(object, collider);
+    };
+    const onCompleteCallback = () => {
+        handleObjectDriftCollision(object, collider, toVector3, sfxAudio);
+        updateCollider(object, collider);
+    };
+    animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback);
 }
 
 function animateDestroyObject(object, collider, destinationObject) {
-    new Tween({...object.position})
-        .to({ ...destinationObject.position }, 50)
-        .easing(Easing.Quadratic.InOut)
-        .onUpdate((coords) => {
-            if (coords) {
-                object.position.x += coords.x;
-                object.position.y += coords.y;
-                object.position.z += coords.z;
-            }
-        })
-        .onComplete(() => {
-            updateCollider(object, collider);
-        })
-        .start();
+    const preAnimationCallback = getEmptyFunction();
+    const fromVector3 = object.position;
+    const toVector3 = destinationObject.position;
+    const animationDuration = 50;
+    const onUpdateCallback = (coords) => {
+        if (coords) {
+            object.position.x += coords.x;
+            object.position.y += coords.y;
+            object.position.z += coords.z;
+        }
+    };
+    const onCompleteCallback = () => {
+        updateCollider(object, collider);
+    };
+    animate(preAnimationCallback, fromVector3, toVector3, animationDuration, onUpdateCallback, onCompleteCallback);
 }
 
 function updateCollider(mesh, collider) {
