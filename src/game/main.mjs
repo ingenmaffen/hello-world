@@ -1,15 +1,11 @@
 import * as THREE from "../../node_modules/three/build/three.module.mjs";
 import { update } from "../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
-import { initiatePlayer, handlePlayerMovement, setBackgroundMeshForPlayerMovement } from "./controls/player-controls.mjs";
+import { initiatePlayer, handlePlayerMovement } from "./controls/player-controls.mjs";
 import { initiateColliders, setMapMaxColliders, setDriftDecreaseValue } from "./controls/collision.mjs";
 import { handleCameraMovement, setCameraDistance } from "./controls/camera-controls.mjs";
-import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load main menu
-import { boxSolarSystem } from "./maps/box-galaxy.mjs"; // TODO: debug
-import { billiards } from "./maps/billiards.mjs"; // TODO: debug
-import { bowling } from "./maps/bowling.mjs"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.mjs";
 import { initiateSound } from "./sounds/sfx.mjs";
-import { setVolumeInstantly, initiateNsfPlayer } from "./sounds/music.mjs";
+import { initiateNsfPlayer } from "./sounds/music.mjs";
 import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
 import { setMissionMode, setMissionObjects } from "./misc/mission-mode.mjs";
 import { setScene } from "./misc/common.mjs";
@@ -56,7 +52,7 @@ export function initMap(map) {
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys, audio);
 }
 
-function animate(time) {
+export function animate(time) {
     if (!getIsGamePaused()) {
         renderer.render(scene, camera);
         update(time);
@@ -64,6 +60,3 @@ function animate(time) {
     }
     requestAnimationFrame(animate);
 }
-
-initMap(bowling);
-requestAnimationFrame(animate);

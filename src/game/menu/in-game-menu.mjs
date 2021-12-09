@@ -2,6 +2,7 @@ import { initMap } from "../main.mjs";
 import { stopMusic } from "../sounds/music.mjs";
 import { removeEventListeners, setIsGamePaused } from "../misc/event-listeners.mjs";
 import { setVolumeInstantly, getMusicVolume } from "../sounds/music.mjs";
+import { removeCanvas } from "../misc/common.mjs";
 
 // maps
 import { solarSystem } from "../maps/solar-system.mjs";
@@ -101,8 +102,7 @@ function appendButton(text, callback, objectClass) {
 }
 
 function debugLoadScene(map) {
-    const canvas = document.getElementsByTagName("canvas")[0];
-    canvas.remove();
+    removeCanvas();
     stopMusic();
     removeEventListeners();
     initMap(map);

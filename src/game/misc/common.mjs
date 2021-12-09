@@ -49,3 +49,8 @@ export function getPlayerCollider(player) {
 export function removeObject(object) {
     scene.remove(object);
 }
+
+export function removeCanvas() {
+    const canvas = document.getElementsByTagName("canvas")[0];
+    canvas.remove();
+}
