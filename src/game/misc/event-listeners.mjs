@@ -10,7 +10,7 @@ let pressedKeys;
 let sfxAudio;
 let isGamePaused = false;
 
-export function initiateEventListeners(_renderer, _camera, _cameraPosition, _player, _pressedKeys, _sfxAudio) {
+export function initiateEventListeners(_renderer, _camera, _cameraPosition, _player, _pressedKeys, _sfxAudio, cameraDisabled) {
     renderer = _renderer;
     camera = _camera;
     cameraPosition = _cameraPosition;
@@ -18,16 +18,19 @@ export function initiateEventListeners(_renderer, _camera, _cameraPosition, _pla
     pressedKeys = _pressedKeys;
     sfxAudio = _sfxAudio;
 
-    // camera movement
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("click", handleClick);
-    window.addEventListener("wheel", handleScroll);
+    if (!cameraDisabled) {
+        // camera movement
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("click", handleClick);
+        window.addEventListener("wheel", handleScroll);
+        
+        // player movement
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+        window.addEventListener("mousedown", handleMouseDown);
+        window.addEventListener("mouseup", handleMouseUp);
+    } 
 
-    // player movement
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
 
     // event listener on resize
     window.addEventListener("resize", handleWindowResize);

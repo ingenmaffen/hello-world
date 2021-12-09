@@ -1,53 +1,25 @@
-import { initMap } from "../main.mjs";
-import { stopMusic } from "../sounds/music.mjs";
-import { removeEventListeners, setIsGamePaused } from "../misc/event-listeners.mjs";
-import { setVolumeInstantly, getMusicVolume } from "../sounds/music.mjs";
-import { removeCanvas } from "../misc/common.mjs";
+import { setIsGamePaused, removeEventListeners } from "../misc/event-listeners.mjs";
+import { setVolumeInstantly, getMusicVolume, stopMusic } from "../sounds/music.mjs";
+import { appendMenuButton, removeCanvas } from "../misc/common.mjs";
+import { removeMenuBlock, initMainMenu } from "../../main-menu/main-menu.mjs";
 
-// maps
-import { solarSystem } from "../maps/solar-system.mjs";
-import { billiards } from "../maps/billiards.mjs";
-import { boxSolarSystem } from "../maps/box-galaxy.mjs";
-import { bowling } from "../maps/bowling.mjs";
 
 let renderer;
 const buttons = [
     {
         text: "Continue",
-        callback: unPauseGame,
-        cssClass: "continue"
+        callback: unPauseGame
     },
     {
-        text: "Load Map: Solar System",
+        text: "Exit to Main Menu",
         callback: () => {
-            debugLoadScene(solarSystem);
-            unPauseGame();
-        },
-        cssClass: "other-button"
-    },
-    {
-        text: "Load Map: Box Galaxy",
-        callback: () => {
-            debugLoadScene(boxSolarSystem);
-            unPauseGame();
-        },
-        cssClass: "other-button"
-    },
-    {
-        text: "Load Map: Billiards",
-        callback: () => {
-            debugLoadScene(billiards);
-            unPauseGame();
-        },
-        cssClass: "other-button"
-    },
-    {
-        text: "Load Map: Bowling",
-        callback: () => {
-            debugLoadScene(bowling);
-            unPauseGame();
-        },
-        cssClass: "other-button"
+            setIsGamePaused(false);
+            removeOverlay();
+            removeCanvas();
+            stopMusic();
+            removeEventListeners();
+            initMainMenu();
+        }
     }
 ];
 
@@ -65,11 +37,12 @@ function pauseGame() {
     setVolumeInstantly(getMusicVolume() / 5);
     appendOverlay();
     buttons.forEach(button => {
-        appendButton(button.text, button.callback, button.cssClass);
+        appendMenuButton(button.text, button.callback, button.cssClass);
     });
 }
 
 function unPauseGame() {
+    removeMenuBlock();
     setVolumeInstantly(getMusicVolume());
     setIsGamePaused(false);
     renderer.domElement.requestPointerLock();
@@ -80,7 +53,10 @@ function appendOverlay() {
     const overlay = document.createElement("div");
     overlay.classList.add("overlay");
     overlay.id = "overlay";
+    const menuBlock = document.createElement("div");
+    menuBlock.id = "menu-block";
     document.body.appendChild(overlay);
+    document.body.appendChild(menuBlock);
 }
 
 function removeOverlay() {
@@ -88,22 +64,4 @@ function removeOverlay() {
     if (overlay) {
         overlay.remove();
     }
-}
-
-function appendButton(text, callback, objectClass) {
-    const containerDiv = document.createElement("div");
-    const button = document.createElement("button");
-    const overlay = document.getElementById("overlay");
-    button.classList.add(objectClass);
-    button.innerText = text;
-    containerDiv.appendChild(button);
-    overlay.appendChild(containerDiv);
-    button.onclick = callback;
-}
-
-function debugLoadScene(map) {
-    removeCanvas();
-    stopMusic();
-    removeEventListeners();
-    initMap(map);
 }

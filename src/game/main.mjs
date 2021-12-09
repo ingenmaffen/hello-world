@@ -18,8 +18,10 @@ let clock;
 let audio;
 let cameraPosition;
 const pressedKeys = {};
+let autoRotate;
 
-export function initMap(map) {
+export function initMap(map, _autoRotate = false) {
+    autoRotate = _autoRotate;
     cameraPosition = { x: (-5 * Math.PI) / 8, y: Math.PI / 9 }
     clock = new THREE.Clock();
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100 * 200);
@@ -39,7 +41,9 @@ export function initMap(map) {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    renderer.domElement.requestPointerLock();
+    if (!map.playerConfig?.cameraDisabled) {
+        renderer.domElement.requestPointerLock();
+    }
 
     player = initiatePlayer(map.playerConfig, scene);
 
@@ -49,7 +53,7 @@ export function initMap(map) {
     initiateNsfPlayer();
     map.music();
 
-    initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys, audio);
+    initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys, audio, map.playerConfig?.cameraDisabled);
 }
 
 export function animate(time) {
@@ -59,4 +63,13 @@ export function animate(time) {
         handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
     }
     requestAnimationFrame(animate);
+}
+
+export function autoRotateBackground() {
+    if (autoRotate) {
+        handleCameraMovement(0.1, 0, cameraPosition, camera, player);
+        setTimeout(() => {
+            autoRotateBackground();
+        }, 1);
+    }
 }

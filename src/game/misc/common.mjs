@@ -1,4 +1,7 @@
 import { Vector3 } from "../../../node_modules/three/build/three.module.mjs";
+import { stopMusic } from "../sounds/music.mjs";
+import { removeEventListeners } from "./event-listeners.mjs";
+import { initMap } from "../main.mjs";
 
 let scene;
 
@@ -53,4 +56,22 @@ export function removeObject(object) {
 export function removeCanvas() {
     const canvas = document.getElementsByTagName("canvas")[0];
     canvas.remove();
+}
+
+export function appendMenuButton(text, callback, objectClass) {
+    const containerDiv = document.createElement("div");
+    const button = document.createElement("button");
+    const overlay = document.getElementById("menu-block");
+    button.classList.add(objectClass);
+    button.innerText = text;
+    containerDiv.appendChild(button);
+    overlay.appendChild(containerDiv);
+    button.onclick = callback;
+}
+
+export function loadScene(map, autoRotate = false) {
+    removeCanvas();
+    stopMusic();
+    removeEventListeners();
+    initMap(map, autoRotate);
 }
