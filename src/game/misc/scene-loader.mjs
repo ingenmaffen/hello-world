@@ -1,5 +1,5 @@
 import * as THREE from "../../../node_modules/three/build/three.module.mjs";
-import { GLTFLoader } from "../../assets/objects/loader/GLTFLoader.mjs";
+import { GLTFLoader } from "../../assets/third-party/GLTFLoader.mjs";
 
 const debugCustomColliders = false;
 
