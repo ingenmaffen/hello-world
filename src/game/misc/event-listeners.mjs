@@ -48,14 +48,8 @@ export function getIsGamePaused() {
     return isGamePaused;
 }
 
-function unPauseGame() {
-    isGamePaused = false;
-    renderer.domElement.requestPointerLock();
-
-    const overlay = document.getElementById("overlay");
-    if (overlay) {
-        overlay.remove();
-    }
+export function setIsGamePaused(value) {
+    isGamePaused = value;
 }
 
 function handleWindowResize() {
@@ -89,7 +83,7 @@ function handleKeyDown(event) {
     if (event.key === "Escape") {
         document.exitPointerLock();
 
-        isGamePaused = handleInGameMenu(isGamePaused, unPauseGame);
+        isGamePaused = handleInGameMenu(isGamePaused, renderer);
 
         if (!isGamePaused) {
             renderer.domElement.requestPointerLock();

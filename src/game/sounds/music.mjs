@@ -2,6 +2,7 @@ import { run, createNsfPlayer } from "../../../node_modules/nsf-player/nsf-playe
 
 let ctx;
 let nsfPlayer;
+let musicVolume = 1;
 
 export function initiateNsfPlayer() {
     run();
@@ -13,7 +14,16 @@ export function initiateNsfPlayer() {
 export function stopMusic() {
     nsfPlayer.stop();
 }
-export function setVolume(value) {
+
+export function getMusicVolume() {
+    return musicVolume;
+}
+
+export function setVolumeValue(value) {
+    musicVolume = value;
+}
+
+export function setVolumeInstantly(value) {
     nsfPlayer.setVolumeValue(value);
     nsfPlayer.updateVolume();
 }

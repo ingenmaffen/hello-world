@@ -1,6 +1,7 @@
 import { initMap } from "../main.mjs";
 import { stopMusic } from "../sounds/music.mjs";
-import { removeEventListeners } from "../misc/event-listeners.mjs";
+import { removeEventListeners, setIsGamePaused } from "../misc/event-listeners.mjs";
+import { setVolumeInstantly, getMusicVolume } from "../sounds/music.mjs";
 
 // maps
 import { solarSystem } from "../maps/solar-system.mjs";
@@ -8,31 +9,70 @@ import { billiards } from "../maps/billiards.mjs";
 import { boxSolarSystem } from "../maps/box-galaxy.mjs";
 import { bowling } from "../maps/bowling.mjs";
 
-export function handleInGameMenu(menuOpen, unPauseGame) {
-    if (!menuOpen) {
-        appendOverlay();
-        appendButton("Continue", unPauseGame, "continue");
-        appendButton("Load Map: Solar System", () => {
+let renderer;
+const buttons = [
+    {
+        text: "Continue",
+        callback: unPauseGame,
+        cssClass: "continue"
+    },
+    {
+        text: "Load Map: Solar System",
+        callback: () => {
             debugLoadScene(solarSystem);
             unPauseGame();
-        }, "other-button");
-        appendButton("Load Map: Box Galaxy", () => {
+        },
+        cssClass: "other-button"
+    },
+    {
+        text: "Load Map: Box Galaxy",
+        callback: () => {
             debugLoadScene(boxSolarSystem);
             unPauseGame();
-        }, "other-button");
-        appendButton("Load Map: Billiards", () => {
+        },
+        cssClass: "other-button"
+    },
+    {
+        text: "Load Map: Billiards",
+        callback: () => {
             debugLoadScene(billiards);
             unPauseGame();
-        }, "other-button");
-        appendButton("Load Map: Bowling", () => {
+        },
+        cssClass: "other-button"
+    },
+    {
+        text: "Load Map: Bowling",
+        callback: () => {
             debugLoadScene(bowling);
             unPauseGame();
-        }, "other-button");
+        },
+        cssClass: "other-button"
+    }
+];
+
+export function handleInGameMenu(menuOpen, _renderer) {
+    renderer = _renderer;
+    if (!menuOpen) {
+        pauseGame();
     } else {
         unPauseGame();
     }
-
     return !menuOpen;
+}
+
+function pauseGame() {
+    setVolumeInstantly(getMusicVolume() / 5);
+    appendOverlay();
+    buttons.forEach(button => {
+        appendButton(button.text, button.callback, button.cssClass);
+    });
+}
+
+function unPauseGame() {
+    setVolumeInstantly(getMusicVolume());
+    setIsGamePaused(false);
+    renderer.domElement.requestPointerLock();
+    removeOverlay();
 }
 
 function appendOverlay() {
@@ -40,6 +80,13 @@ function appendOverlay() {
     overlay.classList.add("overlay");
     overlay.id = "overlay";
     document.body.appendChild(overlay);
+}
+
+function removeOverlay() {
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.remove();
+    }
 }
 
 function appendButton(text, callback, objectClass) {

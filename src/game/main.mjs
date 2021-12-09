@@ -9,7 +9,7 @@ import { billiards } from "./maps/billiards.mjs"; // TODO: debug
 import { bowling } from "./maps/bowling.mjs"; // TODO: debug
 import { initiateScene } from "./misc/scene-loader.mjs";
 import { initiateSound } from "./sounds/sfx.mjs";
-import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
+import { setVolumeInstantly, initiateNsfPlayer } from "./sounds/music.mjs";
 import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
 import { setMissionMode, setMissionObjects } from "./misc/mission-mode.mjs";
 import { setScene } from "./misc/common.mjs";
@@ -51,7 +51,6 @@ export function initMap(map) {
 
     handleCameraMovement(0, 0, cameraPosition, camera, player);
     initiateNsfPlayer();
-    setVolume(0.25);
     map.music();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys, audio);
