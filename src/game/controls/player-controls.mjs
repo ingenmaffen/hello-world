@@ -10,8 +10,10 @@ import {
 } from "../../../node_modules/three/build/three.module.mjs";
 import { Tween } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { handleCameraMovement, getCameraDistance } from "./camera-controls.mjs";
-import { handleCollision, handleDriftCollision, multiplyVector, isNullVector, handleMissionModeEvents } from "./collision.mjs";
+import { handleCollision, handleDriftCollision } from "./collision.mjs";
 import { addAmbientLight } from "../misc/scene-loader.mjs";
+import { decreaseForceValue, isNullVector, multiplyVector } from "../misc/common.mjs";
+import { handleMissionModeEvents } from "../misc/mission-mode.mjs";
 
 const DEGREE = Math.PI / 180;
 let playerSpeed = 0;
@@ -124,6 +126,13 @@ export function getPlayerSpeed() {
 
 export function getMaxSpeed() {
     return maxSpeed;
+}
+
+export function resetPlayer(player) {
+    player.position.x = 0;
+    player.position.y = 0;
+    player.position.z = 0;
+    setPlayerSpeed(0);
 }
 
 function handleNormalMovement(pressedKeys, clock, player, cameraPosition, camera, audio) {
@@ -239,8 +248,7 @@ function animatePlayerDrift(vector, player, camera, cameraPosition, sfxAudio) {
 }
 
 function decreasePlayerSpeed() { 
-    playerSpeed -= 0.2;
-    playerSpeed = playerSpeed < 0 ? 0 : playerSpeed;
+    playerSpeed = decreaseForceValue(playerSpeed, 0.2);
 }
 
 function isPlayerMoving(pressedKeys) {

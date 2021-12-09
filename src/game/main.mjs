@@ -7,12 +7,11 @@ import { solarSystem } from "./maps/solar-system.mjs"; // TODO: remove, load mai
 import { boxSolarSystem } from "./maps/box-galaxy.mjs"; // TODO: debug
 import { billiards } from "./maps/billiards.mjs"; // TODO: debug
 import { bowling } from "./maps/bowling.mjs"; // TODO: debug
-import { endless } from "./maps/endless.mjs" // TODO: debug
 import { initiateScene } from "./misc/scene-loader.mjs";
 import { initiateSound } from "./sounds/sfx.mjs";
 import { setVolume, initiateNsfPlayer } from "./sounds/music.mjs";
 import { initiateEventListeners, getIsGamePaused } from "./misc/event-listeners.mjs";
-import { initiateEndlessMode, updateEndlessWorld } from "./misc/endless-mode.mjs";
+import { setMissionMode, setMissionObjects } from "./misc/mission-mode.mjs";
 
 let camera;
 let scene;
@@ -30,10 +29,13 @@ export function initMap(map) {
 
     scene = new THREE.Scene();
     const loadedScene = initiateScene(scene, map);
-    initiateColliders(loadedScene.sceneObjects, map.missionMode);
+    initiateColliders(loadedScene.sceneObjects);
     setMapMaxColliders(map.maxDistance);
     setDriftDecreaseValue(map.driftDecreaseValue);
     audio = initiateSound(camera);
+
+    setMissionMode(map.missionMode);
+    setMissionObjects(loadedScene.sceneObjects);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,11 +52,6 @@ export function initMap(map) {
     map.music();
 
     initiateEventListeners(renderer, camera, cameraPosition, player, pressedKeys, audio);
-
-    if (map.endless) {
-        setBackgroundMeshForPlayerMovement(loadedScene.background);
-        initiateEndlessMode();
-    }
 }
 
 function animate(time) {
@@ -62,10 +59,9 @@ function animate(time) {
         renderer.render(scene, camera);
         update(time);
         handlePlayerMovement(pressedKeys, clock, player, cameraPosition, camera, audio);
-        updateEndlessWorld(player)
     }
     requestAnimationFrame(animate);
 }
 
-initMap(endless);
+initMap(solarSystem);
 requestAnimationFrame(animate);

@@ -7,7 +7,6 @@ import { solarSystem } from "../maps/solar-system.mjs";
 import { billiards } from "../maps/billiards.mjs";
 import { boxSolarSystem } from "../maps/box-galaxy.mjs";
 import { bowling } from "../maps/bowling.mjs";
-import { endless } from "../maps/endless.mjs";
 
 export function handleInGameMenu(menuOpen, unPauseGame) {
     if (!menuOpen) {
@@ -27,10 +26,6 @@ export function handleInGameMenu(menuOpen, unPauseGame) {
         }, "other-button");
         appendButton("Load Map: Bowling", () => {
             debugLoadScene(bowling);
-            unPauseGame();
-        }, "other-button");
-        appendButton("Load Map: Endless", () => {
-            debugLoadScene(endless);
             unPauseGame();
         }, "other-button");
     } else {

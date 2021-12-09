@@ -2,15 +2,14 @@ import { Vector3, Mesh, SphereGeometry, MeshBasicMaterial } from "../../../node_
 import { Tween, Easing } from "../../../node_modules/@tweenjs/tween.js/dist/tween.esm.mjs";
 import { playCollisionSound } from "../sounds/sfx.mjs";
 import { getPlayerSpeed, setPlayerSpeed, getMaxSpeed } from "./player-controls.mjs";
+import { decreaseForceValue, multiplyVector, isNullVector } from "../misc/common.mjs";
+import { checkMissionObjective } from "../misc/mission-mode.mjs";
 
 let colliders = [];
 let mapMaxColliders;
-let missionObjects = [];
 let driftDecreaseValue = 0.5;
-let missionMode;
-let bowlingScore = [];
 
-export function initiateColliders(objects, _missionMode) {
+export function initiateColliders(objects) {
     colliders = [];
     objects.forEach((mesh) => {
         switch (getMeshColliderType(mesh)) {
@@ -25,8 +24,6 @@ export function initiateColliders(objects, _missionMode) {
                 break;
         }
     });
-    missionMode = _missionMode;
-    setMissionObjects(objects);
 }
 
 export function setMapMaxColliders(value) {
@@ -35,19 +32,6 @@ export function setMapMaxColliders(value) {
 
 export function setDriftDecreaseValue(value) {
     driftDecreaseValue = value || 0.5;
-}
-
-export function multiplyVector(vector, value) {
-    return new Vector3(
-        vector.x * value,
-        vector.y * value,
-        vector.z * value
-    );
-}
-
-export function decreaseForceValue(value) {
-    value -= driftDecreaseValue;
-    return value < 0 ? 0 : value;
 }
 
 export function handleCollision(player, audio) {
@@ -72,6 +56,7 @@ export function handleCollision(player, audio) {
                 const vector = getCollisionVectorWithAdaptivePlayerSpeed(player, object.mesh);
                 playCollisionSound(audio);
                 animateMovement(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, audio);
+                // animateObjectDrift(object.mesh, multiplyVector(vector, Math.abs(getPlayerSpeed())), object.collider, getPlayerSpeed(), audio);
                 updateCollider(object.mesh, object.collider);
             }
         }
@@ -103,35 +88,6 @@ export function handleDriftCollision(player, vector, audio) {
     });
     return updatedVector || vector;
 }
-
-export function isNullVector(vector) {
-    // TODO: currently it is unusable, because the checks happen at the wrong time during the animation
-    return !(vector.x || vector.y || vector.z);
-}
-
-export function handleMissionModeEvents(moveCount, player) {
-    if (missionMode === "bowling") {
-        resetPlayer(player);
-            if (moveCount % 2 === 0) {
-                const movedPins = missionObjects.filter(object => !areVectorsEqual(object.position, object.otherAttributes.defaultPosition));
-                bowlingScore.push(movedPins.length);
-                checkMissionObjective();
-                // TODO: display text "Resetting pins!"
-                setTimeout(() => {
-                    // TODO: remove text
-                    resetBowlingPins();
-                }, 3000);
-            }
-    }
-}
-
-function resetPlayer(player) {
-    player.position.x = 0;
-    player.position.y = 0;
-    player.position.z = 0;
-    setPlayerSpeed(0);
-}
-
 
 function getUpdatedVectorForObjectCollision(vector, collisionVector) {
     // TODO: implement updated collision vector stuff
@@ -217,7 +173,7 @@ function animateObjectDrift(object, vector, collider, force, sfxAudio) {
             }
         })
         .onComplete(() => {
-            force = decreaseForceValue(force);
+            force = decreaseForceValue(force, driftDecreaseValue);
             if (force && collider) {
                 movementVector = handleObjectDriftCollision(object, collider, vector, sfxAudio);
                 handleMapMaxCollider(object, collider);
@@ -270,86 +226,6 @@ function animateDestroyObject(object, collider, destinationObject) {
             updateCollider(object, collider);
         })
         .start();
-}
-
-function setMissionObjects(objects) {
-    missionObjects = [];
-    switch (missionMode) {
-        case "destroyObjects":
-            objects
-                .filter(object => object?.otherAttributes?.checkIfDestroyed)
-                .forEach(object => {
-                    missionObjects.push(object);
-            });
-            break;
-        case "bowling":
-            objects
-                .filter(object => object?.otherAttributes?.missionObject)
-                .forEach(object => {
-                    missionObjects.push(object);
-            });
-            break;
-    }
-}
-
-function checkMissionObjective() {
-    switch (missionMode) {
-        case "destroyObjects":
-            const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
-            if (missionObjects.length === objectsDone.length) {
-                handleMissionComplete();
-            }
-            break;
-        case "bowling": {
-            if (bowlingScore.length >= 5) {
-                const missionCompleteTreshHold = bowlingScore.filter(value => value >= 9);
-                const achievmentUnlockThreshHold = bowlingScore.filter(value => value >= 10);
-                if (missionCompleteTreshHold.length === bowlingScore.length) {
-                    handleMissionComplete();
-                }
-                else {
-                    handleMissionFailed();
-                }
-            }
-        }
-    }
-}
-
-function handleMissionComplete() {
-    // TODO: mission end screen -> back to the menu or restart
-    // TODO: add sound effect
-    // TODO: maybe some confetti effect
-    console.log("Mission Complete!");
-}
-
-function handleMissionFailed() {
-    // TODO: mission end screen -> back to the menu or restart
-    // TODO: add sound effect
-    // TODO: add monochrome effect
-    console.log("Mission Failed!");
-}
-
-function areVectorsEqual(vector1, vector2) {
-    return vector1.x === vector2.x &&
-        vector1.y === vector2.y &&
-        vector1.z === vector2.z;
-}
-
-function resetBowlingPins() {
-    missionObjects.forEach(pin => {
-        pin.position.x = pin.otherAttributes.defaultPosition.x;
-        pin.position.y = pin.otherAttributes.defaultPosition.y;
-        pin.position.z = pin.otherAttributes.defaultPosition.z;
-        pin.rotation.x = 0;
-        pin.rotation.y = 0;
-        pin.rotation.z = 0;
-        pin.otherAttributes.parentObject.mesh.position.x = pin.otherAttributes.defaultPosition.x;
-        pin.otherAttributes.parentObject.mesh.position.y = pin.otherAttributes.defaultPosition.y;
-        pin.otherAttributes.parentObject.mesh.position.z = pin.otherAttributes.defaultPosition.z;
-        pin.otherAttributes.parentObject.mesh.rotation.x = 0;
-        pin.otherAttributes.parentObject.mesh.rotation.y = 0;
-        pin.otherAttributes.parentObject.mesh.rotation.z = 0;
-    });
 }
 
 function updateCollider(mesh, collider) {
