@@ -2,6 +2,7 @@ import { setIsGamePaused, removeEventListeners } from "../misc/event-listeners.m
 import { setVolumeInstantly, getMusicVolume, stopMusic } from "../sounds/music.mjs";
 import { appendMenuButton, removeCanvas } from "../misc/common.mjs";
 import { removeMenuBlock, initMainMenu } from "../../main-menu/main-menu.mjs";
+import { removeText } from "../misc/mission-mode.mjs";
 
 
 let renderer;
@@ -14,6 +15,7 @@ const buttons = [
         text: "Exit to Main Menu",
         callback: () => {
             setIsGamePaused(false);
+            removeText();
             removeOverlay();
             removeCanvas();
             stopMusic();

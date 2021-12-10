@@ -2,6 +2,7 @@ import { Vector3 } from "../../../node_modules/three/build/three.module.mjs";
 import { stopMusic } from "../sounds/music.mjs";
 import { removeEventListeners } from "./event-listeners.mjs";
 import { initMap } from "../main.mjs";
+import { removeText } from "./mission-mode.mjs";
 
 let scene;
 
@@ -70,6 +71,7 @@ export function appendMenuButton(text, callback, objectClass) {
 }
 
 export function loadScene(map, autoRotate = false) {
+    removeText();
     removeCanvas();
     stopMusic();
     removeEventListeners();

@@ -41,11 +41,16 @@ export function handleMissionModeEvents(moveCount, player) {
             );
             bowlingScore.push(movedPins.length);
             checkMissionObjective();
-            // TODO: display text "Resetting pins!"
-            setTimeout(() => {
-                // TODO: remove text
-                resetBowlingPins();
-            }, 3000);
+
+            if (!missionOver) {
+                addText("Resetting pins, please wait...");
+                setTimeout(() => {
+                    if (!missionOver) {
+                        removeText();
+                    }
+                    resetBowlingPins();
+                }, 3000);
+            }
         }
     }
 }
@@ -74,11 +79,23 @@ export function checkMissionObjective() {
     }
 }
 
+export function removeText() {
+    document.getElementById("center-text")?.remove();
+}
+
+function addText(text) {
+    removeText();
+    const div = document.createElement("div");
+    div.innerHTML = text;
+    div.id = "center-text";
+    document.body.appendChild(div);
+}
+
 function handleMissionComplete() {
     // TODO: mission end screen -> back to the menu or restart
     // TODO: add sound effect
     // TODO: maybe some confetti effect
-    console.log("Mission Complete!");
+    addText("Mission Complete!");
     missionOver = true;
 }
 
@@ -86,7 +103,7 @@ function handleMissionFailed() {
     // TODO: mission end screen -> back to the menu or restart
     // TODO: add sound effect
     // TODO: add monochrome effect
-    console.log("Mission Failed!");
+    addText("Mission Failed!");
     missionOver = true;
 }
 
