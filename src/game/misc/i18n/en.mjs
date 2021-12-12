@@ -13,13 +13,13 @@ export const en = {
 
     // Maps
     SOLAR_SYSTEM_TITLE: "Solar System",
-    SOLAR_SYSTEM_DESC: "Solar System mission text",
+    SOLAR_SYSTEM_DESC: "Mission objective: <br> Push all the other planets into the Sun!",
     BOX_GALAXY_TITLE: "Box Galaxy",
-    BOX_GALAXY_DESC: "Box Galaxy mission text",
+    BOX_GALAXY_DESC: "The cube shaped planets are spreading all over the Galaxy. This must stop at once! Destroy all of them with your perfectly rounded Sun.",
     BILLIARDS_TITLE: "Billiards",
-    BILLIARDS_DESC: "Billiards mission text",
+    BILLIARDS_DESC: "Play a simple game of snooker.",
     BOWLING_TITLE: "Bowling",
-    BOWLING_DESC: "Bowling mission text",
+    BOWLING_DESC: "You have to hit 9 pins out of 10 in all 5 rounds to win this level.",
 
 
     // Credits

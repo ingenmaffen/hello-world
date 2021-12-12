@@ -587,6 +587,78 @@ export const billiards = {
                         destroysObjects: true
                     }
                 },
+                {
+                    name: 'tableOutSide_1',
+                    constructorParams: `${200}, ${10}, ${200}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x,
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z - (26.5 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'tableOutSide_2',
+                    constructorParams: `${200}, ${10}, ${200}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x,
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z + (26.5 * tableScale)
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'tableOutSide_3',
+                    constructorParams: `${200}, ${10}, ${400}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x - (32 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z 
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
+                {
+                    name: 'tableOutSide_4',
+                    constructorParams: `${200}, ${10}, ${400}`,
+                    geometry: "BoxGeometry",
+                    material: "MeshNormalMaterial",
+                    materialOptions: {
+                        opacity: 0,
+                        transparent: true
+                    },
+                    position: {
+                        x: tablePosition.x + (32 * tableScale),
+                        y: tablePosition.y + yOffset,
+                        z: tablePosition.z 
+                    },
+                    otherAttributes: {
+                        destroysObjects: true
+                    }
+                },
             ]
         }
     ]
