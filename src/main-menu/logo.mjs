@@ -13,6 +13,7 @@ import { PixelShader } from "./../assets/third-party/PixelShader.mjs";
 
 import { removeCanvas } from "../game/misc/common.mjs";
 import { initMainMenu } from "./main-menu.mjs";
+import { animate } from "../game/main.mjs";
 
 let camera;
 let renderer;
@@ -85,6 +86,7 @@ function startAnimation() {
         removeCanvas();
         removeTacoText();
         initMainMenu();
+        requestAnimationFrame(animate);
     }, logoDuration);
 }
 

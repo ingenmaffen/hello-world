@@ -1,4 +1,4 @@
-import { initMap, animate, autoRotateBackground } from "../game/main.mjs";
+import { initMap, autoRotateBackground } from "../game/main.mjs";
 import { appendMenuButton, loadScene } from "../game/misc/common.mjs";
 
 // maps
@@ -10,7 +10,6 @@ import { bowling } from "../game/maps/bowling.mjs";
 
 export function initMainMenu() {
     initMap(background, true);
-    requestAnimationFrame(animate);
     autoRotateBackground();
     loadMainMenu();
     addTitle();
