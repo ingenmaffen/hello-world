@@ -59,6 +59,8 @@ export function checkMissionObjective() {
     if (!missionOver) {
         switch (missionMode) {
             case "destroyObjects":
+                // TODO: there is an issue during the billiards level where objects randomly disappear without being destroyed
+                // console.log(missionObjects.map(object => object.otherAttributes));
                 const objectsDone = missionObjects.filter(object => object.otherAttributes.destroyed);
                 if (missionObjects.length === objectsDone.length) {
                     handleMissionComplete();

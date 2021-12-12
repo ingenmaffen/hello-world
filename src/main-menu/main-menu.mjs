@@ -78,9 +78,7 @@ function loadLevelsMenu() {
         {
             text: languageKeys.SOLAR_SYSTEM_TITLE,
             callback: () => {
-                removeMenuBlock();
-                removeTitle();
-                loadScene(solarSystem);
+                loadLevel(solarSystem);
             },
             hoverCallback: () => {
                 setRightSideText(languageKeys.SOLAR_SYSTEM_DESC)
@@ -90,9 +88,7 @@ function loadLevelsMenu() {
         {
             text: languageKeys.BOX_GALAXY_TITLE,
             callback: () => {
-                removeMenuBlock();
-                removeTitle();
-                loadScene(boxSolarSystem);
+                loadLevel(boxSolarSystem);
             },
             hoverCallback: () => {
                 setRightSideText(languageKeys.BOX_GALAXY_DESC)
@@ -102,9 +98,7 @@ function loadLevelsMenu() {
         {
             text: languageKeys.BILLIARDS_TITLE,
             callback: () => {
-                removeMenuBlock();
-                removeTitle();
-                loadScene(billiards);
+                loadLevel(billiards);
             },
             hoverCallback: () => {
                 setRightSideText(languageKeys.BILLIARDS_DESC)
@@ -114,9 +108,7 @@ function loadLevelsMenu() {
         {
             text: languageKeys.BOWLING_TITLE,
             callback: () => {
-                removeMenuBlock();
-                removeTitle();
-                loadScene(bowling);
+                loadLevel(bowling);
             },
             hoverCallback: () => {
                 setRightSideText(languageKeys.BOWLING_DESC)
@@ -135,6 +127,13 @@ function loadLevelsMenu() {
     buttons.forEach(button => {
         appendMenuButton(button.text, button.callback, button.hoverCallback, button.hoverEndCallback);
     });
+}
+
+function loadLevel(level) {
+    removeTexts();
+    removeMenuBlock();
+    removeTitle();
+    loadScene(level);
 }
 
 function loadCreditsMenu() {
