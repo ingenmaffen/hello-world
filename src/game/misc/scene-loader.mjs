@@ -61,11 +61,11 @@ function addObjectToScene(scene, sceneObjects, object) {
     };
     scene.add(mesh);
     sceneObjects.push(mesh);
-    addRingToPlanet(scene, sceneObjects, object);
+    addRingToPlanet(scene, mesh, object);
     addLightToObject(scene, object);
 }
 
-function addRingToPlanet(scene, sceneObjects, object) {
+function addRingToPlanet(scene, mesh, object) {
     if (object.ring) {
         const ringGeometry = object.ring.type === "box" ?
             new THREE.TorusGeometry(object.ring.outerRadius, object.ring.innerRadius, 4, 4) :
@@ -87,7 +87,7 @@ function addRingToPlanet(scene, sceneObjects, object) {
         ring.rotation.x = Math.PI / 2;
         ring.rotation.y = Math.PI / 4;
         scene.add(ring);
-        sceneObjects.push(ring);
+        mesh.ring = ring;
     }
 }
 

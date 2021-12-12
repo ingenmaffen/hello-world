@@ -210,12 +210,24 @@ function animateObjectNormalMovement(object, toVector3, collider, sfxAudio) {
 
 function animateDestroyObject(object) {
     removeObject(object);
+    removeObject(object.ring);
 }
 
 function updateCollider(mesh, collider) {
     collider.center.x = mesh.position.x;
     collider.center.y = mesh.position.y;
     collider.center.z = mesh.position.z;
+    updateRingPosition(mesh);
+}
+
+function updateRingPosition(mesh) {
+    if (mesh.ring) {
+        mesh.ring.position.x = mesh.position.x;
+        mesh.ring.position.y = mesh.position.y;
+        mesh.ring.position.z = mesh.position.z;
+        mesh.ring.rotation.x = mesh.position.x;
+        mesh.ring.rotation.y = mesh.position.y;
+    }
 }
 
 function isObjectColliding(object, collider) {
