@@ -33,6 +33,26 @@ body {
 
 }
 
+#left-side-text,
+#right-side-text {
+    position: absolute;
+    width: 50%;
+    bottom: 15vh;
+    color: white;
+    font-size: 48px;
+    text-align: center;
+    height: 50vh;
+    font-family: monospace;
+}
+
+#left-side-text{
+    left: 0;
+}
+
+#right-side-text {
+    right: 0;
+}
+
 #menu-block {
     position: absolute;
     bottom: 0;

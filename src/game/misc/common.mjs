@@ -59,15 +59,16 @@ export function removeCanvas() {
     canvas.remove();
 }
 
-export function appendMenuButton(text, callback, objectClass) {
+export function appendMenuButton(text, callback, hoverCallback, hoverEndCallback) {
     const containerDiv = document.createElement("div");
     const button = document.createElement("button");
     const overlay = document.getElementById("menu-block");
-    button.classList.add(objectClass);
     button.innerText = text;
     containerDiv.appendChild(button);
     overlay.appendChild(containerDiv);
     button.onclick = callback;
+    button.onmouseover = hoverCallback || getEmptyFunction();
+    button.onmouseout = hoverEndCallback || getEmptyFunction();
 }
 
 export function loadScene(map, autoRotate = false) {

@@ -3,16 +3,18 @@ import { setVolumeInstantly, getMusicVolume, stopMusic } from "../sounds/music.m
 import { appendMenuButton, removeCanvas } from "../misc/common.mjs";
 import { removeMenuBlock, initMainMenu } from "../../main-menu/main-menu.mjs";
 import { removeText } from "../misc/mission-mode.mjs";
+import { getLanguageKeys } from "../misc/i18n/language-service.mjs";
 
 
 let renderer;
+const languageKeys = getLanguageKeys();
 const buttons = [
     {
-        text: "Continue",
+        text: languageKeys.CONTINUE,
         callback: unPauseGame
     },
     {
-        text: "Exit to Main Menu",
+        text: languageKeys.EXIT_TO_MAIN_MENU,
         callback: () => {
             setIsGamePaused(false);
             removeText();
@@ -39,7 +41,7 @@ function pauseGame() {
     setVolumeInstantly(getMusicVolume() / 5);
     appendOverlay();
     buttons.forEach(button => {
-        appendMenuButton(button.text, button.callback, button.cssClass);
+        appendMenuButton(button.text, button.callback);
     });
 }
 
