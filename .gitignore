@@ -6,8 +6,5 @@ dist
 
 package-lock.json
 
-# game music directory (currently not part of the source)
-src/assets/music
-
 # test coverage
 coverage/
