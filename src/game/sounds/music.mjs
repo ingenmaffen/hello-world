@@ -35,3 +35,7 @@ export function playEndlessModeMusic() {
 export function playBilliardMissionMusic() {
     nsfPlayer.play("src/assets/music/Hello-World.nsf", 1);
 }
+
+export function playMenuMusic() {
+    nsfPlayer.play("src/assets/music/Hello-World.nsf", 2);
+}
