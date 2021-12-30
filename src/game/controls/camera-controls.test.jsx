@@ -1,8 +1,16 @@
-import { handleCameraMovement, changeCameraDistance, getCameraDistance } from "./camera-controls.mjs";
+import { handleCameraMovement, changeCameraDistance, getCameraDistance, setCameraDistance } from "./camera-controls.mjs";
 import { jest } from "@jest/globals";
 
 // getCameraDistance
 test("getCameraDistance() default value", () => {
+  expect(getCameraDistance()).toBe(5);
+});
+
+// getCameraDistance
+test("setCameraDistance() should set camera distance value", () => {
+  setCameraDistance(10);
+  expect(getCameraDistance()).toBe(10);
+  setCameraDistance(5);
   expect(getCameraDistance()).toBe(5);
 });
 

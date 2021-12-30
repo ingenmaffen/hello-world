@@ -163,15 +163,20 @@ test("handlePlayerMovement() with moving down", () => {
 });
 
 // buildUpMovementOnMouseDown
-test("buildUpMovementOnMouseDown()", () => {
+xtest("buildUpMovementOnMouseDown()", () => {
     setPlayerSpeed(0);
     buildUpMovementOnMouseDown();
     expect(getPlayerSpeed()).toBeGreaterThan(0);
-    // TODO
+    // TODO: fix buildUpMovementOnMouseDown tests
 });
 
 // movePlayerOnMouseUp
-test("movePlayerOnMouseUp()", () => {
+xtest("movePlayerOnMouseUp()", () => {
     movePlayerOnMouseUp(); 
-    // TODO
+    // TODO: fix movePlayerOnMouseUp tests
 });
+
+// TODO: handlePlayerMovement with canNormalMoveOnXAxis and backgroundMesh
+// TODO: handlePlayerMovement with moving backgroundMesh (setBackgroundMeshForPlayerMovement)
+// TODO: getMaxSpeed()
+// TODO: resetPlayer()

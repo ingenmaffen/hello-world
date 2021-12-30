@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-import { initiateScene } from "./scene-loader.mjs";
+import { addAmbientLight, initiateScene } from "./scene-loader.mjs";
 
 const mockScene = {
     add: jest.fn()
@@ -53,7 +53,7 @@ const mockMap = {
         // movement related options
         normalMovementDisabled: false,
         yAxisDisabledOnClick: false,
-        moveOnClick: false,
+        moveOnClick: true,
         // retainMomentum: false // currently unused
         clickMoveForce: 0.5,
         canNormalMoveOnXAxis: true
@@ -149,7 +149,6 @@ const mockMap = {
 // initiateScene
 test("initiateScene()", () => {
     const loadedMap = initiateScene(mockScene, mockMap);
-    expect(loadedMap.customColliders.length).toBe(1);
     expect(loadedMap.sceneObjects.length).toBe(3); // 1 BoxGeometry, 1 SphereGeometry and its ring
     expect(mockScene.add).toHaveBeenCalledTimes(8); 
     /* mockScene.add calls: 
@@ -163,4 +162,9 @@ test("initiateScene()", () => {
      * 8. orbital circle
      */
 
+});
+
+test("addAmbiendLight()", () => {
+    addAmbientLight(mockScene);
+    expect(mockScene.add).toHaveBeenCalledTimes(1);
 });

@@ -62,7 +62,7 @@ export const mockObjects = [
         geometry: {
             computeBoundingSphere: jest.fn(),
             parameters: {
-                width: 5,
+                height: 5,
             },
             boundingSphere: {
                 clone: mockCloneFunction,
@@ -139,3 +139,9 @@ test("handleCollision with big object", () => {
     expect(mockAudio.audioLoader.load).toHaveBeenCalledTimes(1);
     expect(getPlayerSpeed()).toBeLessThanOrEqual(0);
 });
+
+// TODO: handleCollision with player destroying objects
+// TODO: handleDriftCollision tests
+
+// TODO: setMapMaxColliders()
+// TODO: setDriftDecreaseValue()

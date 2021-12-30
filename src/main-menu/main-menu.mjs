@@ -1,6 +1,9 @@
 import { initMap, autoRotateBackground } from "../game/main.mjs";
-import { appendMenuButton, loadScene } from "../game/misc/common.mjs";
+import { appendMenuButton, removeCanvas } from "../game/misc/common.mjs";
 import { getLanguageKeys } from "../game/misc/i18n/language-service.mjs";
+import { stopMusic } from "../game/sounds/music.mjs";
+import { removeEventListeners } from "../game/misc/event-listeners.mjs";
+import { removeText } from "../game/misc/mission-mode.mjs";
 
 // maps
 import { background } from "../game/maps/main-menu-background.mjs";
@@ -20,6 +23,14 @@ export function initMainMenu() {
 
 export function removeMenuBlock() {
     document.getElementById("menu-block")?.remove();
+}
+
+function loadScene(map, autoRotate = false) {
+    removeText();
+    removeCanvas();
+    stopMusic();
+    removeEventListeners();
+    initMap(map, autoRotate);
 }
 
 function addMenuBlock() {
